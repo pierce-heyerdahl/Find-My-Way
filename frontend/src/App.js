@@ -17,13 +17,16 @@ function App() {
 
 	return (
 		<div>
-			{(typeof data.numbers === 'undefined') ? (
-				<p>Loading...</p>
-			) : (
-				data.numbers.map((number, i) => (
-					<p key={i}>{number}</p>
-				))
-			)}
+			<h1>Find My Way</h1>
+			<div>
+				{(typeof data.numbers === 'undefined') ? (
+					<p>Loading...</p>
+				) : (
+					data.numbers.map((number, i) => (
+						<p key={i}>{number}</p>
+					))
+				)}
+			</div>
 		</div>
 	)
 }
