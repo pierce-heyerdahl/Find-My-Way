@@ -9,7 +9,7 @@ CORS(app)
 @app.route("/test", methods=['GET'])
 @cross_origin()
 def numbers():
-    return {"numbers": ["One", "Two"]}
+    return {"numbers": ["four", "five"]}
 
 @app.route("/")
 def serve():
