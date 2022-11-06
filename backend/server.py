@@ -1,10 +1,13 @@
 from flask import Flask
+from flask_cors import CORS, cross_origin
 import os
 
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
+CORS(app)
 
 @app.route("/test")
-def members():
+@cross_origin()
+def numbers():
     return {"numbers": ["One", "Two"]}
 
 if __name__ == "__main__":
