@@ -4,6 +4,8 @@ from flask.helpers import send_from_directory
 from dotenv import load_dotenv
 import psycopg2
 import os
+import requests
+import json
 
 # loading environmental variables
 load_dotenv()
@@ -18,13 +20,12 @@ app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/
 CORS(app)
 
 # for local
-#def get_db_connection():
+# def get_db_connection():
 #    try:
 #        conn = psycopg2.connect(
 #                database = DATABASE,
 #                user = DATABASE_USERNAME,
 #                password = DATABASE_PASSWORD)
-#
 #        return conn
 #    except:
 #        print('Error')
@@ -74,6 +75,16 @@ def database():
 def seed():
     seed_database()
     return ("Success")
+
+# route to call BLS api
+@app.route("/api")
+@cross_origin()
+def apiCall():
+    headers = {'Content-type': 'application/json'}
+    data = json.dumps({"seriesid": ['CUUR0000SA0'],"startyear":"2010", "endyear":"2019"})
+    response = requests.get('https://api.bls.gov/publicAPI/v1/timeseries/data/', data=data, headers=headers)
+    json_res = response.json()
+    return (json_res)
 
 if __name__ == "__main__":
     #app.run(host = "0.0.0.0", debug = True, port = int(os.environ.get("PORT", 5000)))
