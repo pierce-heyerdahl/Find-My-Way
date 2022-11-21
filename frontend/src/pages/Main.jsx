@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { TextField, Box, Button, Stack, Typography } from "@mui/material";
 import FilterList from "../components/FilterList";
 import FilterItem from "../components/FilterItem";
+import { Link } from "react-router-dom";
 
 const Main = () => {
   const [data, setData] = useState([{}]);
@@ -28,9 +29,11 @@ const Main = () => {
           <TextField label="Job Title" type="search" />
           <Typography>OR</Typography>
           <TextField label="City" type="search" />
-          <Button href="mapview" variant="contained">
-            Search in Map
-          </Button>
+          <Link to="/mapview">
+            <Button variant="contained">
+              Search in Map
+            </Button>
+          </Link>
           <FilterList>
             <FilterItem label="Avg. Rent Amount" />
             <FilterItem label="Big Mac Price" />
