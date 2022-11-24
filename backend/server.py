@@ -80,10 +80,13 @@ def seed():
 @app.route("/api")
 @cross_origin()
 def apiCall():
+
+    # API call to BLS to get annual mean salary for web developers in , Bellingham WA, Kennewick-Richland WA, Olympia-Tumwater WA, Seattle-Tacoma-Bellevue WA, Spokane-Spokane Valley WA (In That Order)
     headers = {'Content-type': 'application/json'}
-    data = json.dumps({"seriesid": ['CUUR0000SA0'],"startyear":"2010", "endyear":"2019"})
-    response = requests.get('https://api.bls.gov/publicAPI/v1/timeseries/data/', data=data, headers=headers)
-    json_res = response.json()
+    data = json.dumps({"seriesid": ['OEUM001338000000015125404','OEUM002842000000015125404','OEUM003650000000015125404','OEUM004266000000015125404','OEUM004406000000015125404'],"startyear":"2021", "endyear":"2021"})
+    p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
+    json_res = p.json()
+
     return (json_res)
 
 if __name__ == "__main__":
