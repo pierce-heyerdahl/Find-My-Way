@@ -11,10 +11,10 @@ import json
 load_dotenv()
 
 # getting credentials for database
-DATABASE = os.getenv('DATABASE')
-DATABASE_USERNAME = os.getenv('DATABASE_USERNAME')
-DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
-#DATABASE_URL = os.environ['DATABASE_URL']
+#DATABASE = os.getenv('DATABASE')
+#DATABASE_USERNAME = os.getenv('DATABASE_USERNAME')
+#DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
+DATABASE_URL = os.environ['DATABASE_URL']
 
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
 CORS(app)
@@ -33,8 +33,7 @@ CORS(app)
 # for production
 def get_db_connection():
     try:
-        #conn = psycopg2.connect(DATABASE_URL)
-        conn = psycopg2.connect("postgres://khholwfxuryzgg:2a2486b67f4fbfb2304e3f1b568b2171c0de11bfa255b65e3e666286934d3774@ec2-44-195-132-31.compute-1.amazonaws.com:5432/d3enr941jnvcd")
+        conn = psycopg2.connect(DATABASE_URL)
         return conn
     except:
         print('Error')
