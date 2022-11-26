@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { TextField, Box, Button, Stack, Typography } from "@mui/material";
 import FilterList from "../components/FilterList";
 import FilterItem from "../components/FilterItem";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Main = () => {
+  const inputRef = useRef(null);
   const [data, setData] = useState([{}]);
+  const [searchInput, setSearchInput] = useState([{}]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/test")
@@ -15,6 +19,13 @@ const Main = () => {
         console.log(data);
       });
   }, []);
+
+  const handleClick = () => {
+    setSearchInput(inputRef.current.value);
+    console.log(searchInput);
+    console.log(inputRef.current.value);
+    navigate('/mapview', { state: { job_title: inputRef.current.value } });
+  };
 
   return (
     <Box p={2}>
@@ -27,13 +38,21 @@ const Main = () => {
           width="400px"
         >
           <TextField label="Job Title" type="search" />
+          <div>
+            <input
+              ref={inputRef}
+              type="text"
+              id="Job Title"
+              name="Job Title"
+            />
+          </div>
           <Typography>OR</Typography>
-          <TextField label="City" type="search" />
-          <Link to="/mapview">
-            <Button variant="contained">
+          <TextField label="State" type="search" />
+          
+            <Button variant="contained" onClick={handleClick}>
               Search in Map
             </Button>
-          </Link>
+          
           <FilterList>
             <FilterItem label="Avg. Rent Amount" />
             <FilterItem label="Big Mac Price" />
