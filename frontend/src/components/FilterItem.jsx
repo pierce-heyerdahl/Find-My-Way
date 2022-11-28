@@ -12,8 +12,15 @@ const FilterItem = (props) => {
 
   return (
     <FormControlLabel
-      control={<Checkbox checked={isChecked} onChange={handleChange} />}
+      control={
+        <Checkbox
+          checked={isChecked}
+          onChange={handleChange}
+          sx={{ marginRight: "10px" }}
+        />
+      }
       label={label}
+      sx={{ marginLeft: 0 }}
     />
   );
 };
