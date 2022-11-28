@@ -69,10 +69,10 @@ const MapView = () => {
           <Typography textAlign="center">Search by City: {city}</Typography>
         ) : null}
         <Box>
-          {typeof data.numbers === "undefined" ? (
+          {typeof data.results === "undefined" ? (
             <p>Loading...</p>
           ) : (
-            data.numbers.map((number, i) => <p key={i}>{number}</p>)
+            data.results.map((row, i) => <p key={i}>{row["City"] + " " + row["Job Title"] + " " + row["Salary"]}</p>)
           )}
         </Box>
       </Box>
