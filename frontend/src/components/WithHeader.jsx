@@ -19,9 +19,9 @@ function WithHeader() {
             width: "100%",
           }}
         >
-          <Box sx={{ background: "red", height: "100%", width: "100px" }}>
+          <Button size="large" href="/" variant="text" sx={{ fontSize: 24 }}>
             Back
-          </Box>
+          </Button>
           <Button size="large" href="/" variant="text" sx={{ fontSize: 24 }}>
             Find My Way
           </Button>
