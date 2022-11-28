@@ -37,15 +37,7 @@ const Main = () => {
           spacing={2}
           width="400px"
         >
-          <TextField label="Job Title" type="search" />
-          <div>
-            <input
-              ref={inputRef}
-              type="text"
-              id="Job Title"
-              name="Job Title"
-            />
-          </div>
+          <TextField inputRef={inputRef} label="Job Title" type="search" />
           <Typography>OR</Typography>
           <TextField label="State" type="search" />
           
