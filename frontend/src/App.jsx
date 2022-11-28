@@ -8,6 +8,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import "./index.css";
 
 const App = () => {
+  const jobTitle = "Software Engineer";
+
   return (
     <BrowserRouter>
       <Routes>

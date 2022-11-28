@@ -1,17 +1,35 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { Box, Stack, Divider, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Divider,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Map from "../components/Map";
 
 const MapView = () => {
+  const [searchParams] = useSearchParams();
+
+  const jobTitle = searchParams.get("jobTitle");
+  const city = searchParams.get("city");
+
+  const [data, setData] = React.useState([{}]);
+
+  React.useEffect(() => {
+    fetch("/test")
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        console.log(data);
+      });
+  }, []);
+
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
   const zoom = 12;
-  const [data, setData] = useState([{}]);
-  const {state} = useLocation();
-  const {job_title} = state;
 
   const render = (status) => {
     switch (status) {
@@ -24,8 +42,8 @@ const MapView = () => {
     }
   };
 
-  useEffect(() => {
-    fetch("/search/" + job_title)
+  React.useEffect(() => {
+    fetch("/search/" + jobTitle)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
@@ -42,12 +60,21 @@ const MapView = () => {
       sx={{ width: "100%", height: "calc(100% - 58px)" }}
     >
       <Box sx={{ width: "50%", height: "50%" }}>
-        Results
-        {typeof data.results === "undefined" ? (
-          <p>Loading...</p>
-        ) : (
-          data.results.map((row, i) => <p key={i}>{row["City"] + " " + row["Job Title"] + " " + row["Salary"]}</p>)
-        )}
+        {jobTitle ? (
+          <Typography textAlign="center">
+            Search by Job Title: {jobTitle}
+          </Typography>
+        ) : null}
+        {city ? (
+          <Typography textAlign="center">Search by City: {city}</Typography>
+        ) : null}
+        <Box>
+          {typeof data.numbers === "undefined" ? (
+            <p>Loading...</p>
+          ) : (
+            data.numbers.map((number, i) => <p key={i}>{number}</p>)
+          )}
+        </Box>
       </Box>
 
       <Box
