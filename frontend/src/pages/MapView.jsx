@@ -72,7 +72,7 @@ const MapView = () => {
           {typeof data.results === "undefined" ? (
             <p>Loading...</p>
           ) : (
-            data.results.map((row, i) => <p style="padding: 1em" key={i}>{row["City"] + " " + row["Salary"]}</p>)
+            data.results.map((row, i) => <p sx={{padding: "1em"}} key={i}>{row["City"] + " " + row["Salary"]}</p>)
           )}
         </Box>
       </Box>
