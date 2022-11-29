@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 import psycopg2
 import os
 
-front_end_api_controller = Blueprint('front_end_api_controller', __name__)
+bp = Blueprint('front_end_api_controller_bp', __name__)
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
@@ -29,7 +29,7 @@ def get_results_from_db(user_search):
 
     return(holder)
 
-@front_end_api_controller.route("/search/<state>", methods=['GET'])
+@bp.route("/search/<state>", methods=['GET'])
 @cross_origin()
 def search(state):
     return {"results": get_results_from_db(state)}

@@ -2,13 +2,13 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 
-from front_end_api_controller import front_end_api_controller
-from external_api_controller import external_api_controller
+import front_end_api_controller
+import external_api_controller
 
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
 
-app.register_blueprint(front_end_api_controller)
-app.register_blueprint(external_api_controller)
+app.register_blueprint(front_end_api_controller.bp)
+app.register_blueprint(external_api_controller.bp)
 
 CORS(app)
 

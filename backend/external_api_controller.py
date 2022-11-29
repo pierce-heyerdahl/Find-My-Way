@@ -5,7 +5,7 @@ import os
 import requests
 import json
 
-external_api_controller = Blueprint('external_api_controller', __name__)
+bp = Blueprint('external_api_controller_bp', __name__)
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
@@ -61,7 +61,7 @@ def seed_database():
     conn.commit()
     conn.close()
 
-@external_api_controller.route("/seed")
+@bp.route("/seed")
 @cross_origin()
 def seed():
     seed_database()
