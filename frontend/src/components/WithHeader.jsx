@@ -56,7 +56,7 @@ function WithHeader() {
             >
               <ClickAwayListener onClickAway={handleTooltipClose}>
                 <Tooltip
-                  title="Disclaimer: Testing disclaimer message."
+                  title="Disclaimer: Find My Way is designed to help users find future careers and locations to live. The data used by Find My Way is sourced directly from the United States Bureau of Labor Statistics."
                   open={isTooltipOpen}
                 >
                   <Icon onClick={handleTooltipOpen}>priority_high</Icon>
