@@ -2,17 +2,16 @@ import React from "react";
 import { TextField, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import FilterList from "../components/FilterList";
-import FilterItem from "../components/FilterItem";
+import WeatherFilter from "../components/WeatherFilter";
 
 const Main = () => {
   const [jobTitle, setJobTitle] = React.useState("");
-  const [city, setCity] = React.useState("");
+  const [state, setState] = React.useState("");
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    if (!jobTitle.trim() && !city.trim()) {
-      alert("You must enter either Job Title or City!");
+    if (!jobTitle.trim() && !state.trim()) {
+      alert("You must enter either Job Title or state!");
       return;
     }
 
@@ -24,8 +23,8 @@ const Main = () => {
       searchParams.push("jobTitle=" + encodeURI(jobTitle.trim()));
     }
 
-    if (city) {
-      searchParams.push("city=" + encodeURI(city.trim()));
+    if (state) {
+      searchParams.push("state=" + encodeURI(state.trim()));
     }
 
     navigate(url + `?${searchParams.join("&")}`);
@@ -37,10 +36,10 @@ const Main = () => {
     setJobTitle(newValue);
   };
 
-  const handleChangeCity = (ev) => {
+  const handleChangeState = (ev) => {
     const newValue = ev.target.value;
 
-    setCity(newValue);
+    setState(newValue);
   };
 
   return (
@@ -50,7 +49,7 @@ const Main = () => {
           alignItems="center"
           display="flex"
           justifyContent="center"
-          spacing={3}
+          spacing={3.5}
           width="400px"
         >
           <TextField
@@ -59,15 +58,14 @@ const Main = () => {
             onChange={handleChangeJobTitle}
           />
           <Typography>OR</Typography>
-          <TextField label="City" type="search" onChange={handleChangeCity} />
+          <TextField label="State" type="search" onChange={handleChangeState} />
           <Button onClick={handleSearch} variant="contained">
             Search in Map
           </Button>
-          <FilterList>
-            <FilterItem label="Avg. Rent Amount" />
-            <FilterItem label="Avg. Gas Price" />
-            <FilterItem label="Avg. Utility Cost" />
-          </FilterList>
+          <Box paddingTop={2}>
+            Weather
+            <WeatherFilter />
+          </Box>
         </Stack>
       </Box>
     </Box>
