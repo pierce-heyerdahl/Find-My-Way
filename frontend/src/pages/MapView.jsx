@@ -74,7 +74,7 @@ const MapView = () => {
           ) : (
             data.results.map((row, i) => (
               <p sx={{ padding: "1em" }} key={i}>
-                {row["state"] + " $" + row["Salary"]}
+                {row["City"] + " $" + row["Salary"]}
               </p>
             ))
           )}
