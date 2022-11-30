@@ -15,7 +15,7 @@ const MapView = () => {
   const [searchParams] = useSearchParams();
 
   const jobTitle = searchParams.get("jobTitle");
-  const city = searchParams.get("city");
+  const state = searchParams.get("state");
 
   const [data, setData] = React.useState([{}]);
 
@@ -65,14 +65,18 @@ const MapView = () => {
             Search by Job Title: {jobTitle}
           </Typography>
         ) : null}
-        {city ? (
-          <Typography textAlign="center">Search by City: {city}</Typography>
+        {state ? (
+          <Typography textAlign="center">Search by state: {state}</Typography>
         ) : null}
-        <Box>
+        <Box textAlign="center">
           {typeof data.results === "undefined" ? (
             <p>Loading...</p>
           ) : (
-            data.results.map((row, i) => <p key={i}>{row["City"] + " " + row["Job Title"] + " " + row["Salary"]}</p>)
+            data.results.map((row, i) => (
+              <p sx={{ padding: "1em" }} key={i}>
+                {row["City"] + " $" + row["Salary"]}
+              </p>
+            ))
           )}
         </Box>
       </Box>
@@ -80,7 +84,7 @@ const MapView = () => {
       <Box
         border="1px grey solid"
         width="100%"
-        height="100"
+        height="100%"
         sx={{ alignItems: "center", justifyContent: "center", width: "50%" }}
       >
         <Wrapper
