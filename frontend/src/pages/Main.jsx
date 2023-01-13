@@ -2,8 +2,6 @@ import React from "react";
 import { TextField, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import WeatherFilter from "../components/WeatherFilter";
-
 const Main = () => {
   const [jobTitle, setJobTitle] = React.useState("");
   const [state, setState] = React.useState("");
@@ -62,10 +60,6 @@ const Main = () => {
           <Button onClick={handleSearch} variant="contained">
             Search in Map
           </Button>
-          <Box paddingTop={2}>
-            Weather
-            <WeatherFilter />
-          </Box>
         </Stack>
       </Box>
     </Box>
