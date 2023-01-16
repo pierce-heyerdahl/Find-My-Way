@@ -20,6 +20,9 @@ def allowed_file(filename):
     return '.' in filename and \
     filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def test_upload(filename):
+    return send_from_directory("./data/salary", filename)
+
 @app.route("/")
 @cross_origin()
 def serve_main():
@@ -44,6 +47,7 @@ def upload_salary():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join("./data/salary", filename))
+            test_upload(filename)
             return ("Success")
     return ("Failure")
 
