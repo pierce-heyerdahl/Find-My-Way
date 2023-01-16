@@ -14,7 +14,8 @@ app.register_blueprint(external_api_controller.bp)
 
 CORS(app)
 
-ALLOWED_EXTENSIONS = set(['.csv'])
+ALLOWED_EXTENSIONS = set(['.csv', 'xlsx'])
+CURRENT_DIR = os.path.dirname(__file__)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -36,25 +37,25 @@ def numbers():
 def serve_admin():
     return send_from_directory('../frontend/', 'adminPage.html')
 
-@app.route('/uploadSalary', methods = ['GET', 'POST'])
+@app.route('/uploadSalary', methods = ['POST'])
 @cross_origin()
 def upload_salary():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join("./data/salary", filename))
+            file.save(os.path.join(CURRENT_DIR, filename))
             return ("Success")
     return ("Failure")
 
-@app.route('/uploadCoL', methods = ['GET', 'POST'])
+@app.route('/uploadCoL', methods = ['POST'])
 @cross_origin()
 def upload_CoL():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join("./data/col", filename))
+            file.save(os.path.join(CURRENT_DIR, filename))
             return ("Success")
     return ("Failure")
 
