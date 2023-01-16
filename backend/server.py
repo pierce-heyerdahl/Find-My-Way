@@ -44,7 +44,8 @@ def upload_salary():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join("./data/salary", filename))
-        return send_from_directory('../frontend/', 'adminPage.html')
+            return ("Success")
+    return ("Failure")
 
 @app.route('/uploadCoL', methods = ['GET', 'POST'])
 @cross_origin()
@@ -54,7 +55,8 @@ def upload_CoL():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join("./data/col", filename))
-        return send_from_directory('../frontend/', 'adminPage.html')
+            return ("Success")
+    return ("Failure")
 
 @app.errorhandler(404)
 @cross_origin()
