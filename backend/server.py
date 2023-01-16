@@ -21,7 +21,7 @@ def allowed_file(filename):
     filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/testUpload")
-@cross_origin
+@cross_origin()
 def test_upload():
     return send_from_directory("./data/salary", "annual_aqi_by_county_2022.csv")
 
