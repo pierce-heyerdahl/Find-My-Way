@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <body>
+
+        <h1>Administrator Page</h1>
+        
+        <form action = "http://localhost:5000/uploadSalary" method = "POST" enctype = "multipart/form-data">
+            <div>
+                <p>BLS Salary Excel Upload</p>
+                <p><input id="upload_button" type="file" name="file"></p>
+                <p><input id="submit_button" type="submit"></p>
+            </div>
+        </form>
+
+        <form action = "http://localhost:5000/uploadCoL" method = "POST" enctype = "multipart/form-data">
+            <div>
+                <p>C2ER Cost of Living Excel Upload</p>
+                <p><input id="upload_button" type="file" name="file"></p>
+                <p><input id="submit_button" type="submit"></p>
+            </div>
+        </form>
+        
+    </body>
+</html>
