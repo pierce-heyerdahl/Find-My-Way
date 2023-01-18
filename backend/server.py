@@ -16,9 +16,25 @@ CORS(app)
 
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
+#for production
+ADMIN_PASS = os.environ['ADMIN_PASS']
+
+#for local testing
+#ADMIN_PASS = ''
+
 def allowed_file(filename):
     return '.' in filename and \
     filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def password_form():
+    return '''<form method="post">
+            <label for="pass">Please enter admin password:</label>
+            <input type="pwd" id="pwd" name="pwd" required>
+            <input type="submit" value="Sign in">
+            </form>'''
+
+def check_password(pwd):
+    return pwd == ADMIN_PASS
 
 @app.route("/testUpload")
 @cross_origin()
@@ -36,10 +52,19 @@ def serve_main():
 def numbers():
     return {"numbers": ["four", "five"]}
 
-@app.route("/admin")
+@app.route("/admin", methods=['GET', 'POST'])
 @cross_origin()
 def serve_admin():
-    return send_from_directory('../frontend/', 'adminPage.html')
+    if request.method == 'POST':
+        pwd = request.form['pwd']
+        if check_password(pwd):
+            return send_from_directory('../frontend/', 'adminPage.html')
+        else:
+            return password_form()
+    if request.method == 'GET':
+        return password_form()
+    
+
 
 @app.route('/uploadSalary', methods = ['POST'])
 @cross_origin()
