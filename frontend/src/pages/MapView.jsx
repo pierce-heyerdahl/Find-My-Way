@@ -9,6 +9,8 @@ import {
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { useSearchParams } from "react-router-dom";
 
+import BarChart, { convertBarChartData } from "../components/BarChart";
+
 import Map from "../components/Map";
 
 const MapView = () => {
@@ -18,15 +20,6 @@ const MapView = () => {
   const state = searchParams.get("state");
 
   const [data, setData] = React.useState([{}]);
-
-  React.useEffect(() => {
-    fetch("/test")
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        console.log(data);
-      });
-  }, []);
 
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
   const zoom = 12;
@@ -78,6 +71,12 @@ const MapView = () => {
               </p>
             ))
           )}
+        </Box>
+        {/*where graph will go*/}
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ maxWidth: "100%", width: 400 }}>
+            <BarChart chartData={convertBarChartData(data)} />
+          </Box>
         </Box>
       </Box>
 
