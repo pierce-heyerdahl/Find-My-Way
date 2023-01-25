@@ -35,7 +35,14 @@ export const convertBarChartData = (originalData) => {
 };
 
 function BarChart({ chartData }) {
-  if (chartData) return <Bar data={chartData} updateMode="resize" />;
+  if (chartData)
+    return (
+      <Bar
+        data={chartData}
+        updateMode="resize"
+        options={{ maintainAspectRatio: false }}
+      />
+    );
   else return "The datasets are empty!";
 }
 
