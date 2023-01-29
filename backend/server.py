@@ -29,7 +29,7 @@ def allowed_file(filename):
 def password_form():
     return '''<form method="post">
             <label for="pass">Please enter admin password:</label>
-            <input type="pwd" id="pwd" name="pwd" required>
+            <input type="password" id="pwd" name="pwd" required>
             <input type="submit" value="Sign in">
             </form>'''
 
