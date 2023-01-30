@@ -1,5 +1,6 @@
 from flask import Blueprint
 from flask_cors import cross_origin
+from dotenv import load_dotenv
 import psycopg2
 import os
 import requests
@@ -7,11 +8,23 @@ import json
 
 bp = Blueprint('external_api_controller_bp', __name__)
 
+#local DB
+#load_dotenv()
+#DATABASE = os.getenv('DATABASE')
+#DATABASE_USERNAME = os.getenv('DATABASE_USERNAME')
+#DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
+#registrationkey = os.getenv('REGISTRATION_KEY')
+
+#production DB
 DATABASE_URL = os.environ['DATABASE_URL']
 registrationkey = os.environ['REGISTRATION_KEY']
 
 def get_db_connection():
     try:
+        #local DB
+        #conn = psycopg2.connect(database = DATABASE, user = DATABASE_USERNAME, password = DATABASE_PASSWORD)
+
+        #production DB
         conn = psycopg2.connect(DATABASE_URL)
         return conn
     except:

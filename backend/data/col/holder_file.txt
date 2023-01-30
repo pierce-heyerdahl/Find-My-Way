@@ -1,0 +1,1 @@
+Purpose of this file is to make sure the col folder is pushed to git.
