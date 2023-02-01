@@ -12,6 +12,7 @@ import { useSearchParams } from "react-router-dom";
 import BarChart, { convertBarChartData } from "../components/BarChart";
 
 import Map from "../components/Map";
+import Marker from "../components/Marker";
 
 const MapView = () => {
   const [searchParams] = useSearchParams();
@@ -22,6 +23,7 @@ const MapView = () => {
   const [data, setData] = React.useState([{}]);
 
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
+  const positions = [{ lat: 30, lng: -97}, { lat: 20, lng: 85}];
   const zoom = 12;
 
   const render = (status) => {
@@ -90,7 +92,15 @@ const MapView = () => {
           apiKey={"AIzaSyD6FfjQK2HkU7BEbYZit0gSdpm-9e7IabI"}
           render={render}
         >
-          <Map center={center} zoom={zoom} />
+          <Map center={center} zoom={zoom}>
+            {typeof data.results === "undefined" ? (
+              console.log("Wahhhhh")
+            ) : (
+              data.results.map((row) => (
+                <Marker position={{lat: row["lat"], lng: row["lng"]}} />
+              ))
+            )}
+          </Map>
         </Wrapper>
       </Box>
     </Stack>

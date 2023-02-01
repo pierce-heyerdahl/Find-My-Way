@@ -29,13 +29,13 @@ def get_db_connection():
 def get_results_from_db(user_search):
     conn = get_db_connection()
     cur = conn.cursor()
-    SQL_query = "SELECT Jobs.title, Jobs.salary, Cities.name FROM Jobs INNER JOIN Cities ON Jobs.city_id = Cities.id WHERE lower(Jobs.title) = (%s) ORDER BY Jobs.salary DESC LIMIT 5"
+    SQL_query = "SELECT Jobs.title, Jobs.salary, Cities.name, Cities.latitude, Cities.longitude FROM Jobs INNER JOIN Cities ON Jobs.city_id = Cities.id WHERE lower(Jobs.title) = (%s) ORDER BY Jobs.salary DESC LIMIT 5"
     cur.execute(SQL_query, (user_search.lower(),))
     rows = cur.fetchall()
     conn.close()
 
     def transform_to_object(row):
-        return {"Job Title": row[0], "Salary": row[1], "City": row[2]}
+        return {"Job Title": row[0], "Salary": row[1], "City": row[2], "lat": float(row[3]), "lng": float(row[4])}
 
     holder = list(map(transform_to_object, rows))
 

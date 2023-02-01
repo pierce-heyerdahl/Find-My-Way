@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
 
-const Map = ({ center, zoom }) => {
+const Map = ({ center, zoom, children }) => {
   const ref = React.useRef(null);
   const [map, setMap] = React.useState();
 
@@ -11,7 +11,11 @@ const Map = ({ center, zoom }) => {
     }
   }, [ref, map]);
 
-  return <Box ref={ref} id="map" sx={{ height: "100%", width: "100%" }} />;
+  return (
+    <Box ref={ref} id="map" sx={{ height: "100%", width: "100%" }}>
+      {React.Children.map(children, (child) => React.cloneElement(child, {map}))}
+    </Box>
+  );
 };
 
 export default Map;
