@@ -22,5 +22,5 @@ class City(db.Model):
     name = db.Column(db.String)
     lattitude = db.Column(db.Double)
     longitude = db.Column(db.Double)
-    state = db.Column(db.String, ForeignKey("State.name"))
+    state = db.Column(db.String)
     

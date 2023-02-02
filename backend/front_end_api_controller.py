@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import psycopg2
 import os
+from models import *
 
 bp = Blueprint('front_end_api_controller_bp', __name__)
 
@@ -13,18 +14,18 @@ bp = Blueprint('front_end_api_controller_bp', __name__)
 #DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
 
 #production DB
-DATABASE_URL = os.environ['DATABASE_URL']
+#DATABASE_URL = os.environ['DATABASE_URL']
 
-def get_db_connection():
-    try:
-        #local DB
-        #conn = psycopg2.connect(database = DATABASE, user = DATABASE_USERNAME, password = DATABASE_PASSWORD)
+# def get_db_connection():
+#     try:
+#         #local DB
+#         #conn = psycopg2.connect(database = DATABASE, user = DATABASE_USERNAME, password = DATABASE_PASSWORD)
 
-        #production DB
-        conn = psycopg2.connect(DATABASE_URL)
-        return conn
-    except:
-        print('Error')
+#         #production DB
+#         conn = psycopg2.connect(DATABASE_URL)
+#         return conn
+#     except:
+#         print('Error')
 
 def get_results_from_db(user_search):
     conn = get_db_connection()
