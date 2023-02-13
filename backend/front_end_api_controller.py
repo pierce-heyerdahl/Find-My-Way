@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import psycopg2
 import os
+from sqlalchemy import select
 from models import *
 
 bp = Blueprint('front_end_api_controller_bp', __name__)
@@ -28,13 +29,15 @@ bp = Blueprint('front_end_api_controller_bp', __name__)
 #         print('Error')
 
 def get_results_from_db(user_search):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    SQL_query = "SELECT Jobs.title, Jobs.salary, Cities.name FROM Jobs INNER JOIN Cities ON Jobs.city_id = Cities.id WHERE lower(Jobs.title) = (%s) ORDER BY Jobs.salary DESC LIMIT 5"
-    cur.execute(SQL_query, (user_search.lower(),))
-    rows = cur.fetchall()
-    conn.close()
+    # conn = get_db_connection()
+    # cur = conn.cursor()
+    # SQL_query = "SELECT Jobs.title, Jobs.salary, Cities.name FROM Jobs INNER JOIN Cities ON Jobs.city_id = Cities.id WHERE lower(Jobs.title) = (%s) ORDER BY Jobs.salary DESC LIMIT 5"
+    # cur.execute(SQL_query, (user_search.lower(),))
+    # rows = cur.fetchall()
+    # conn.close()
 
+    stmt = select(Salary).where(Salary.state == user_search).order_by(Salary.salary.desc.limit(5))
+    
     def transform_to_object(row):
         return {"Job Title": row[0], "Salary": row[1], "City": row[2]}
 
