@@ -35,15 +35,31 @@ const MapView = () => {
     }
   };
 
+  const queries = [];
+
+  searchParams.forEach((val, kv) => {
+    queries.push(`${kv}=${val}`);
+  });
+
+  const url = `/search/?${queries.join("&")}`;
+
+  console.log({ url });
+
+  // search/?jobTitle=Lawyer
+  // search/?state=Washington
+  // search/?jobTitle=Lawyer&state=Washington
+
   React.useEffect(() => {
-    fetch("/search/" + jobTitle)
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
         console.log(data);
         console.log(data[0]);
       });
-  }, []);
+  }, [url]);
+
+  // http://localhost:3000/mapview?jobTitle=Lawyer&state=Washington
 
   return (
     <Stack
