@@ -29,19 +29,15 @@ bp = Blueprint('front_end_api_controller_bp', __name__)
 #         print('Error')
 
 def get_results_from_db(user_search):
-    # conn = get_db_connection()
-    # cur = conn.cursor()
-    # SQL_query = "SELECT Jobs.title, Jobs.salary, Cities.name FROM Jobs INNER JOIN Cities ON Jobs.city_id = Cities.id WHERE lower(Jobs.title) = (%s) ORDER BY Jobs.salary DESC LIMIT 5"
-    # cur.execute(SQL_query, (user_search.lower(),))
-    # rows = cur.fetchall()
-    # conn.close()
+    query = select(Salary).where(Salary.state == user_search).order_by(Salary.salary.desc()).limit(5)
+    results = db.session.execute(query)
 
-    stmt = select(Salary).where(Salary.state == user_search).order_by(Salary.salary.desc.limit(5))
-    
+    #funciton to tranform result set to object
     def transform_to_object(row):
-        return {"Job Title": row[0], "Salary": row[1], "City": row[2]}
+        salary_res = row[0]
+        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city}
 
-    holder = list(map(transform_to_object, rows))
+    holder = list(map(transform_to_object, results))
 
     return(holder)
 

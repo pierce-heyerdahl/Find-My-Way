@@ -15,12 +15,12 @@ class Salary(db.Model):
 class State(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    abbreviation = db.Columb(db.String)
+    abbreviation = db.Column(db.String)
 
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    lattitude = db.Column(db.Double)
-    longitude = db.Column(db.Double)
+    lattitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
     state = db.Column(db.String)
     
