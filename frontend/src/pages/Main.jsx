@@ -1,6 +1,7 @@
 import React from "react";
 import { TextField, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import backgroundImage from "./images/test2.jpg";
 
 const Main = () => {
   const [jobTitle, setJobTitle] = React.useState("");
@@ -41,13 +42,20 @@ const Main = () => {
   };
 
   return (
-    <Box p={3}>
+    <Box
+      p={3}
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <Box display="flex" justifyContent="center">
         <Stack
           alignItems="center"
           display="flex"
           justifyContent="center"
-          spacing={3.5}
+          spacing={3}
           width="400px"
         >
           <TextField

@@ -44,7 +44,13 @@ function WithHeader() {
               <Button>Back</Button>
             </NavLink>
           </Box>
-          <Button size="large" href="/" variant="text" sx={{ fontSize: 24 }}>
+          <Button
+            size="large"
+            href="/"
+            variant="text"
+            sx={{ fontSize: 25, ml: 2.5 }}
+            color="primary"
+          >
             Find My Way
           </Button>
           <Box>
