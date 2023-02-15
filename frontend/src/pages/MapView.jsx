@@ -35,7 +35,7 @@ const MapView = () => {
     }
   };
 
-  const queries = [];
+  /*const queries = [];
 
   searchParams.forEach((val, kv) => {
     queries.push(`${kv}=${val}`);
@@ -57,7 +57,27 @@ const MapView = () => {
         console.log(data);
         console.log(data[0]);
       });
-  }, [url]);
+  }, [url]); */
+
+  React.useEffect(() => {
+    if (state !== null) {
+      fetch("/searchState/" + state)
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+          console.log(data);
+          console.log(data[0]);
+        });
+    } else {
+      fetch("/searchTitle/" + jobTitle)
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+          console.log(data);
+          console.log(data[0]);
+        });
+    }
+  }, []);
 
   // http://localhost:3000/mapview?jobTitle=Lawyer&state=Washington
 
