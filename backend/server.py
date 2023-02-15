@@ -19,7 +19,7 @@ ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 #for production
 ADMIN_PASS = os.environ['ADMIN_PASS']
 
-#for local testing
+for local testing
 #ADMIN_PASS = ''
 
 def allowed_file(filename):
@@ -36,6 +36,7 @@ def password_form():
 def check_password(pwd):
     return pwd == ADMIN_PASS
 
+# TODO delete this
 @app.route("/testUpload")
 @cross_origin()
 def test_upload():
@@ -45,12 +46,6 @@ def test_upload():
 @cross_origin()
 def serve_main():
     return send_from_directory(app.static_folder, 'index.html')
-
-# TODO delete this
-@app.route("/test", methods=['GET'])
-@cross_origin()
-def numbers():
-    return {"numbers": ["four", "five"]}
 
 @app.route("/admin", methods=['GET', 'POST'])
 @cross_origin()
@@ -63,8 +58,6 @@ def serve_admin():
             return password_form()
     if request.method == 'GET':
         return password_form()
-    
-
 
 @app.route('/uploadSalary', methods = ['POST'])
 @cross_origin()

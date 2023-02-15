@@ -20,6 +20,12 @@ const MapView = () => {
   const jobTitle = searchParams.get("jobTitle");
   const state = searchParams.get("state");
 
+  const flag = true;
+
+  // returns null for the one not searched
+  console.log(jobTitle);
+  console.log(state);
+
   const [data, setData] = React.useState([{}]);
 
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
@@ -38,13 +44,23 @@ const MapView = () => {
   };
 
   React.useEffect(() => {
-    fetch("/search/" + jobTitle)
+    if (state !== null) {
+      fetch("/searchState/" + state)
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+          console.log(data);
+          console.log(data[0]);
+        });
+    } else {
+      fetch("/searchTitle/" + jobTitle)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
         console.log(data);
         console.log(data[0]);
       });
+    }
   }, []);
 
   return (
@@ -56,24 +72,40 @@ const MapView = () => {
     >
       <Box sx={{ width: "50%", height: "50%" }}>
         {jobTitle ? (
-          <Typography textAlign="center">
-            Search by Job Title: {jobTitle}
-          </Typography>
+          <Typography textAlign="center">Search by Job Title: {jobTitle}</Typography>
         ) : null}
         {state ? (
           <Typography textAlign="center">Search by state: {state}</Typography>
         ) : null}
-        <Box textAlign="center">
-          {typeof data.results === "undefined" ? (
-            <p>Loading...</p>
-          ) : (
-            data.results.map((row, i) => (
-              <p sx={{ padding: "1em" }} key={i}>
-                {row["City"] + " $" + row["Salary"]}
-              </p>
-            ))
-          )}
-        </Box>
+
+        {jobTitle ? (
+          <Box textAlign="center">
+            {typeof data.results === "undefined" ? (
+              <p>Loading...</p>
+            ) : (
+              data.results.map((row, i) => (
+                <p sx={{ padding: "1em" }} key={i}>
+                  {row["City"] + ", " + row["State"] + " $" + row["Salary"]}
+                </p>
+              ))
+            )}
+          </Box>
+        ) : null}
+
+        {state ? (
+          <Box textAlign="center">
+            {typeof data.results === "undefined" ? (
+              <p>Loading...</p>
+            ) : (
+              data.results.map((row, i) => (
+                <p sx={{ padding: "1em" }} key={i}>
+                  {row["City"] + " " + row["Job Title"] + " $" + row["Salary"]}
+                </p>
+              ))
+            )}
+          </Box>
+        ) : null}
+
         {/*where graph will go*/}
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Box sx={{ maxWidth: "100%", width: 400 }}>
@@ -94,7 +126,7 @@ const MapView = () => {
         >
           <Map center={center} zoom={zoom}>
             {typeof data.results === "undefined" ? (
-              console.log("Wahhhhh")
+              console.log("This makes the markers work")
             ) : (
               data.results.map((row) => (
                 <Marker position={{lat: row["lat"], lng: row["lng"]}} />
