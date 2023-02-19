@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey
 
 db = SQLAlchemy()
 
-conn_string = 'postgresql://jeffbailie@localhost:5432/mydb'
+conn_string = 'postgresql://jeffbailie@localhost:5432/fmwdemo'
 
 class Salary(db.Model):
     id = db.Column(db.Integer, primary_key=True)

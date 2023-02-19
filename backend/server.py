@@ -11,17 +11,15 @@ import front_end_api_controller
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
 
 app.register_blueprint(front_end_api_controller.bp)
-#app.register_blueprint(external_api_controller.bp)
 
 CORS(app)
 
 #Initializing DB and Schema
 
 #production DB
-#DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = os.environ['DATABASE_URL']
 #registrationkey = os.environ['REGISTRATION_KEY']
 
-DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/mydb2'
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db.init_app(app)
 
