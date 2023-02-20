@@ -48,7 +48,7 @@ function WithHeader() {
             size="large"
             href="/"
             variant="text"
-            sx={{ fontSize: 25, ml: 2.5 }}
+            sx={{ fontSize: 30, ml: 2.5 }}
             color="primary"
           >
             Find My Way
