@@ -48,6 +48,8 @@ const Main = () => {
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        boxSizing: "border-box",
+        height: "calc(100% - 58px)",
       }}
     >
       <Box display="flex" justifyContent="center">
@@ -68,6 +70,7 @@ const Main = () => {
           <Button onClick={handleSearch} variant="contained">
             Search in Map
           </Button>
+          <Box>test</Box>
         </Stack>
       </Box>
     </Box>

@@ -77,7 +77,7 @@ const MapView = () => {
           console.log(data[0]);
         });
     }
-  }, []);
+  }, [jobTitle, state]);
 
   // http://localhost:3000/mapview?jobTitle=Lawyer&state=Washington
 
@@ -117,21 +117,25 @@ const MapView = () => {
         ) : null}
         <Box
           sx={{
-            textAlign: "center",
+            textAlign: "left",
             margin: "auto",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            width: "fit-content",
           }}
         >
           {typeof data.results === "undefined" ? (
             <p>Loading...</p>
           ) : (
             data.results.map((row, i) => (
-              <p sx={{ padding: "1em" }} key={i}>
-                {i + 1}. {row["City"] + " $" + row["Salary"]}
-              </p>
+              <Box
+                sx={{ padding: "1em", textAlign: "left", width: "100%" }}
+                key={i}
+              >
+                {i + 1}. {row["City"] + " $" + row["Salary"].toLocaleString()}
+              </Box>
             ))
           )}
         </Box>
