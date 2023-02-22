@@ -18,8 +18,8 @@ CORS(app)
 #Initializing DB and Schema
 
 #production DB
-#DATABASE_URL = os.environ['DATABASE_URL']
-DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/fmwdemo'
+DATABASE_URL = os.environ['DATABASE_URL']
+#DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/fmwdemo'
 #registrationkey = os.environ['REGISTRATION_KEY']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
