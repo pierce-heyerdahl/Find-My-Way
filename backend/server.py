@@ -4,6 +4,7 @@ from flask.helpers import send_from_directory
 from werkzeug.utils import secure_filename
 import os
 from models import * 
+from state_to_abreviation import abbrevStates
 import pandas as pd
 
 import front_end_api_controller
@@ -17,7 +18,8 @@ CORS(app)
 #Initializing DB and Schema
 
 #production DB
-DATABASE_URL = os.environ['DATABASE_URL']
+#DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/fmwdemo'
 #registrationkey = os.environ['REGISTRATION_KEY']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
@@ -60,9 +62,15 @@ def upload_salary():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            
+            #make directory if it dosn't exist
+            try:
+                os.makedirs("./data/salary")
+            except OSError:
+                pass # already exists
+            
             file.save(os.path.join("./data/salary", filename))
-
-            salaries = parse_excel_file_to_df(filename)
+            salaries = parse_salary_excel_file_to_df(filename)
             if(salaries.empty):
                 return("Error parsing file")
             try:
@@ -77,18 +85,25 @@ def upload_salary():
 
 @app.route('/uploadGeo', methods = ['POST'])
 @cross_origin()
-def upload_salary():
+def upload_geo():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+
+            #make the directory if it doesn't exist
+            try:
+                os.makedirs("./data/geo")
+            except OSError:
+                pass # already exists
+
             file.save(os.path.join("./data/geo", filename))
 
-            geo = parse_excel_file_to_df(filename)
+            geo = parse_geo_excel_file_to_df(filename)
             if(geo.empty):
                 return("Error parsing file")
             try:
-                num_rows_deleted = db.session.query(Salary).delete()
+                num_rows_deleted = db.session.query(City).delete()
                 db.session.commit()
             except:
                 db.session.rollback()
@@ -114,7 +129,7 @@ def upload_CoL():
 def not_found(e):
     return send_from_directory(app.static_folder, 'index.html')
 
-def parse_excel_file_to_df(filename) -> pd.DataFrame:
+def parse_salary_excel_file_to_df(filename) -> pd.DataFrame:
     try:
         data = pd.read_excel(os.path.join('./data/salary', filename))
         # Select columns we need, and replace symbols to 0.
@@ -143,7 +158,26 @@ def parse_excel_file_to_df(filename) -> pd.DataFrame:
 
     return pd.DataFrame()
 
-    
+def parse_geo_excel_file_to_df(filename) -> pd.DataFrame():
+    try:
+        data = pd.read_excel(os.path.join('./data/geo', filename))
+        # Abstract data that meet the criteria.
+        USdata = data[(data['country'] == 'United States')]
+        USdata.head()
+        # Select columns we need and rename columns.
+        finalData = pd.DataFrame(USdata, columns = ['city', 'admin_name', 'lat', 'lng'])
+        finalData.rename(columns = {'city':'name', 'admin_name':'state'}, inplace=True)
+        #add state abbreviation column
+        finalData['abbr'] = finalData['state'].replace(abbrevStates)
+        return finalData
+    except pd.errors.EmptyDataError:
+        print("File is empty or has no data.")
+    except FileNotFoundError:
+        print("File not found.")
+    except pd.errors.ParserError:
+        print("File is not in the expected format.")
+
+    return pd.DataFrame()
     
 if __name__ == "__main__":
     #app.run(host = "0.0.0.0", debug = True, port = int(os.environ.get("PORT", 5000)))
