@@ -36,10 +36,10 @@ def get_results_from_db_state(user_search):
 
 @bp.route("/searchState/<state>", methods=['GET'])
 @cross_origin()
-def search(state):
+def search_state(state):
     return {"results": get_results_from_db_state(state)}
 
 @bp.route("/searchTitle/<title>", methods=['GET'])
 @cross_origin()
-def search(title):
+def search_title(title):
     return {"results": get_results_from_db_title(title)}
