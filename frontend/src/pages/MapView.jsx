@@ -59,15 +59,15 @@ const MapView = () => {
     }
   };
 
-  /*const queries = [];
+  //const queries = [];
 
-  searchParams.forEach((val, kv) => {
-    queries.push(`${kv}=${val}`);
-  });
+  // searchParams.forEach((val, kv) => {
+  //   queries.push(`${kv}=${val}`);
+  // });
 
-  const url = `/search/?${queries.join("&")}`;
+  // const url = `/search/?${queries.join("&")}`;
 
-  console.log({ url });
+  // console.log({ url });
 
   // search/?jobTitle=Lawyer
   // search/?state=Washington
