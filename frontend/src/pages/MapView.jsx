@@ -35,15 +35,51 @@ const MapView = () => {
     }
   };
 
+  /*const queries = [];
+
+  searchParams.forEach((val, kv) => {
+    queries.push(`${kv}=${val}`);
+  });
+
+  const url = `/search/?${queries.join("&")}`;
+
+  console.log({ url });
+
+  // search/?jobTitle=Lawyer
+  // search/?state=Washington
+  // search/?jobTitle=Lawyer&state=Washington
+
   React.useEffect(() => {
-    fetch("/search/" + jobTitle)
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
         console.log(data);
         console.log(data[0]);
       });
-  }, []);
+  }, [url]); */
+
+  React.useEffect(() => {
+    if (state !== null) {
+      fetch("/searchState/" + state)
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+          console.log(data);
+          console.log(data[0]);
+        });
+    } else {
+      fetch("/searchTitle/" + jobTitle)
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+          console.log(data);
+          console.log(data[0]);
+        });
+    }
+  }, [jobTitle, state]);
+
+  // http://localhost:3000/mapview?jobTitle=Lawyer&state=Washington
 
   return (
     <Stack
@@ -52,29 +88,69 @@ const MapView = () => {
       spacing={0}
       sx={{ width: "100%", height: "calc(100% - 58px)" }}
     >
-      <Box sx={{ width: "50%", height: "50%" }}>
+      <Box sx={{ width: "50%", height: "50%", margin: "2em" }}>
         {jobTitle ? (
-          <Typography textAlign="center">
-            Search by Job Title: {jobTitle}
+          <Typography
+            textAlign="center"
+            sx={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#F1C40F",
+            }}
+          >
+            Search by Job Title:{" "}
+            <span style={{ color: "#28B463 " }}>{jobTitle.toUpperCase()}</span>
           </Typography>
         ) : null}
         {state ? (
-          <Typography textAlign="center">Search by state: {state}</Typography>
+          <Typography
+            textAlign="center"
+            sx={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              color: "#F1C40F",
+            }}
+          >
+            Search by State:{" "}
+            <span style={{ color: "#28B463 " }}>{state.toUpperCase()}</span>
+          </Typography>
         ) : null}
-        <Box textAlign="center">
+        <Box
+          sx={{
+            textAlign: "left",
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "fit-content",
+          }}
+        >
           {typeof data.results === "undefined" ? (
             <p>Loading...</p>
           ) : (
             data.results.map((row, i) => (
-              <p sx={{ padding: "1em" }} key={i}>
-                {row["City"] + " $" + row["Salary"]}
-              </p>
+              <Box
+                sx={{ padding: "1em", textAlign: "left", width: "100%" }}
+                key={i}
+              >
+                {i + 1}. {row["City"] + " $" + row["Salary"].toLocaleString()}
+              </Box>
             ))
           )}
         </Box>
+
+        <Divider orientation="horizontal" flexItem sx={{ margin: "2em 0" }} />
         {/*where graph will go*/}
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Box sx={{ maxWidth: "100%", width: 400 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", margin: "1em" }}>
+          <Box
+            sx={{
+              maxWidth: "100%",
+              maxHeight: "100%",
+              width: "600px",
+              height: "300px",
+            }}
+          >
             <BarChart chartData={convertBarChartData(data)} />
           </Box>
         </Box>
