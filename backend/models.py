@@ -20,7 +20,8 @@ class State(db.Model):
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    lattitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
+    abbr = db.Columnd(db.String)
     state = db.Column(db.String)
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
     
