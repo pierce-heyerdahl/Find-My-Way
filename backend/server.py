@@ -75,6 +75,29 @@ def upload_salary():
             return ("Success")
     return ("Failure")
 
+@app.route('/uploadGeo', methods = ['POST'])
+@cross_origin()
+def upload_salary():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join("./data/geo", filename))
+
+            geo = parse_excel_file_to_df(filename)
+            if(geo.empty):
+                return("Error parsing file")
+            try:
+                num_rows_deleted = db.session.query(Salary).delete()
+                db.session.commit()
+            except:
+                db.session.rollback()
+                return("Failure")
+            geo.to_sql('city', db.engine, if_exists='append', index_label='id')
+            return ("Success")
+    return ("Failure")
+
+
 @app.route('/uploadCoL', methods = ['POST'])
 @cross_origin()
 def upload_CoL():
