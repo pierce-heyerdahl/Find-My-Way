@@ -1,8 +1,6 @@
 import React from "react";
 
 const Marker = ({ position, map }) => {
-    console.log({position});
-
     const [marker, setMarker] = React.useState();
 
     React.useEffect(() => {

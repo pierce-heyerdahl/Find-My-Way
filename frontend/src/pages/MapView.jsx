@@ -23,14 +23,30 @@ const MapView = () => {
   const flag = true;
 
   // returns null for the one not searched
-  console.log(jobTitle);
-  console.log(state);
+  //console.log(jobTitle);
+  //console.log(state);
 
   const [data, setData] = React.useState([{}]);
 
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
   const positions = [{ lat: 30, lng: -97}, { lat: 20, lng: 85}];
   const zoom = 12;
+
+  const tilesLoaded = (m) => {
+    console.log(m.getZoom());
+    console.log("tilesloaded");
+    var bounds = new window.google.maps.LatLngBounds();
+    console.log(data.results);
+    {typeof data.results === "undefined" ? (
+      console.log("No Data Yet")
+    ) : (
+      data.results.map((row) => (
+        bounds.extend(new window.google.maps.LatLng(row["lat"], row["lng"])))
+      ))
+    }
+    //data.results.map((row) => (bounds.extend(new window.google.maps.LatLng(row["lat"], row["lng"]))));
+    m.fitBounds(bounds);
+  };
 
   const render = (status) => {
     switch (status) {
@@ -46,19 +62,19 @@ const MapView = () => {
   React.useEffect(() => {
     if (state !== null) {
       fetch("/searchState/" + state)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
-          console.log(data);
-          console.log(data[0]);
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        //console.log(data);
+        //console.log(data[0]);
         });
     } else {
       fetch("/searchTitle/" + jobTitle)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
-        console.log(data);
-        console.log(data[0]);
+        //console.log(data);
+        //console.log(data[0]);
       });
     }
   }, []);
@@ -124,7 +140,7 @@ const MapView = () => {
           apiKey={"AIzaSyD6FfjQK2HkU7BEbYZit0gSdpm-9e7IabI"}
           render={render}
         >
-          <Map center={center} zoom={zoom}>
+          <Map center={center} zoom={zoom} locations={data.results} tilesLoaded={tilesLoaded}>
             {typeof data.results === "undefined" ? (
               console.log("This makes the markers work")
             ) : (
