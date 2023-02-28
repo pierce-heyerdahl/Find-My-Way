@@ -19,7 +19,6 @@ CORS(app)
 
 #production DB
 DATABASE_URL = os.environ['DATABASE_URL']
-#DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/fmwdemo'
 #registrationkey = os.environ['REGISTRATION_KEY']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
@@ -79,7 +78,12 @@ def upload_salary():
             except:
                 db.session.rollback()
                 return("Failure")
-            salaries.to_sql('salary', db.engine, if_exists='append', index_label='id')
+            
+            try:
+                salaries.to_sql('salary', db.engine, if_exists='append', index_label='id')
+            except:
+                return("Failure")
+            
             return ("Success")
     return ("Failure")
 
@@ -147,7 +151,22 @@ def parse_salary_excel_file_to_df(filename) -> pd.DataFrame:
 
         # Rename columns.
         final_data = pd.DataFrame(temp_data, columns = ['AREA_TITLE', 'PRIM_STATE', 'OCC_TITLE', 'A_MEAN'])
-        final_data.rename(columns = {'AREA_TITLE':'CITY', 'PRIM_STATE':'STATE', 'OCC_TITLE':'JOB TITLE', 'A_MEAN':'Annual mean wage'}, inplace = True)
+        final_data.rename(columns = {'AREA_TITLE':'city', 'PRIM_STATE':'abbr', 'OCC_TITLE':'job', 'A_MEAN':'salary'}, inplace = True)
+        
+        # Manipulate city names to divide the columns.
+        final_data['city'] = final_data['city'].apply(lambda x: x.replace("--",","))
+        final_data['city'] = final_data['city'].apply(lambda x: x.replace("-",","))
+
+        # Divide columns by city name to refine the dataset.
+        final_data = final_data.assign(city = final_data.city.str.split(","))
+        final_data = final_data.explode('city')
+        final_data.head()
+
+        statesList = dict(zip(abbrevStates.values(), abbrevStates.keys()))
+        final_data['state'] = final_data['abbr'].replace(statesList)
+        final_data = final_data[['city','state','abbr','job', 'salary']]
+        final_data.reset_index(drop=True, inplace=True)
+
         return final_data
     except pd.errors.EmptyDataError:
         print("File is empty or has no data.")

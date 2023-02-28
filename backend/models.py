@@ -3,19 +3,14 @@ from sqlalchemy import ForeignKey
 
 db = SQLAlchemy()
 
-conn_string = 'postgresql://jeffbailie@localhost:5432/fmwdemo'
 
 class Salary(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    city = db.Column('CITY', db.String)
-    state = db.Column('STATE', db.String)
-    job = db.Column('JOB TITLE', db.String)
-    salary = db.Column('Annual mean wage', db.Integer)
-
-class State(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    abbreviation = db.Column(db.String)
+    city = db.Column(db.String)
+    state = db.Column(db.String)
+    abbr = db.Column(db.String)
+    job = db.Column(db.String)
+    salary = db.Column(db.Integer)
 
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
