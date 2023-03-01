@@ -24,7 +24,10 @@ function WithHeader() {
       <header
         style={{
           backgroundColor: "snow",
-          filter: "drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.1))",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+          position: "sticky",
+          top: 0,
+          width: "100%",
           zIndex: 1,
         }}
       >
