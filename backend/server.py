@@ -1,4 +1,6 @@
-from flask import Flask, jsonify, request, redirect, url_for
+from flask import Flask, jsonify, request, redirect, url_for, make_response
+import flask_login
+from flask_login import LoginManager, UserMixin
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 from werkzeug.utils import secure_filename
@@ -9,23 +11,62 @@ import external_api_controller
 
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
 
+#for production
+SECRET_KEY = os.environ['SECRET_KEY']
+
+#for local testing
+#SECRET_KEY = 'key1'
+
+app.secret_key = SECRET_KEY
+
+login_manager = LoginManager()
+
 app.register_blueprint(front_end_api_controller.bp)
 app.register_blueprint(external_api_controller.bp)
 
+login_manager.init_app(app)
 CORS(app)
-
-ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
 #for production
 ADMIN_PASS = os.environ['ADMIN_PASS']
 
 #for local testing
-#ADMIN_PASS = ''
+#ADMIN_PASS = 'abc'
+
+users = {'admin':{'pw':ADMIN_PASS}}
+
+class User(UserMixin):
+    pass
+
+@login_manager.user_loader
+def user_loader(username):
+    if username not in users:
+        return
+    
+    user = User()
+    user.id = username
+    return user
+
+@login_manager.request_loader
+def request_loader(request):
+    username = request.form.get('username')
+    if username not in users:
+        return
+    
+    user = User()
+    user.id = username
+
+    user.is_authenticated = request.form['pw'] == users[username]['pw']
+
+    return user
+
+ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
 def allowed_file(filename):
     return '.' in filename and \
     filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# TODO delete this
 def password_form():
     return '''<form method="post">
             <label for="pass">Please enter admin password:</label>
@@ -33,6 +74,7 @@ def password_form():
             <input type="submit" value="Sign in">
             </form>'''
 
+# TODO delete this
 def check_password(pwd):
     return pwd == ADMIN_PASS
 
@@ -51,13 +93,26 @@ def serve_main():
 @cross_origin()
 def serve_admin():
     if request.method == 'POST':
-        pwd = request.form['pwd']
-        if check_password(pwd):
-            return send_from_directory('../frontend/', 'adminPage.html')
-        else:
-            return password_form()
-    if request.method == 'GET':
-        return password_form()
+        username = request.form.get('username')
+        if request.form.get('pw') == users[username]['pw']:
+            user = User()
+            user.id = username
+            flask_login.login_user(user)
+            return redirect(url_for('protect'))
+    return send_from_directory('../frontend/', 'adminLogin.html')
+
+@app.route('/protect')
+@flask_login.login_required
+def protect():
+    response = make_response(send_from_directory('../frontend/', 'adminPage.html'))
+    response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+    return response
+
+@app.route('/logout')
+def logout():
+  flask_login.logout_user()
+
+  return redirect("/")
 
 @app.route('/uploadSalary', methods = ['POST'])
 @cross_origin()

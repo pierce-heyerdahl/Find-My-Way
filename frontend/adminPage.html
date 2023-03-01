@@ -4,9 +4,11 @@
 
         <h1>Administrator Page</h1>
         
+        <h2>File Uploads</h2>
+
         <form action = "https://find-my-way-deploy.herokuapp.com/uploadSalary" method = "POST" enctype = "multipart/form-data">
             <div>
-                <p>BLS Salary Excel Upload</p>
+                <h3>BLS Salary Excel Upload</h3>
                 <p><input id="upload_button" type="file" name="file"></p>
                 <p><input id="submit_button" type="submit"></p>
             </div>
@@ -14,9 +16,16 @@
 
         <form action = "https://find-my-way-deploy.herokuapp.com/uploadCoL" method = "POST" enctype = "multipart/form-data">
             <div>
-                <p>C2ER Cost of Living Excel Upload</p>
+                <h3>C2ER Cost of Living Excel Upload</h3>
                 <p><input id="upload_button" type="file" name="file"></p>
                 <p><input id="submit_button" type="submit"></p>
+            </div>
+        </form>
+
+        <h2>Log Out of Admin Page</h2>
+        <form action = "/logout">
+            <div>
+                <p><input type="submit" value="Log Out"></p>
             </div>
         </form>
         
