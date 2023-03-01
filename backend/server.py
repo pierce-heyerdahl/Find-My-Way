@@ -19,6 +19,8 @@ CORS(app)
 
 #production DB
 DATABASE_URL = os.environ['DATABASE_URL']
+
+DATABASE_URL= DATABASE_URL[:8]+'ql' + DATABASE_URL[8:]
 #registrationkey = os.environ['REGISTRATION_KEY']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
