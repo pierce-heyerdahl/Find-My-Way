@@ -8,6 +8,7 @@ import os
 from models import * 
 from state_to_abreviation import abbrevStates
 import pandas as pd
+import threading
 
 import front_end_api_controller
 
@@ -31,10 +32,10 @@ CORS(app)
 #Initializing DB and Schema
 
 #production DB
-DATABASE_URL = os.environ['DATABASE_URL']
-
-DATABASE_URL= DATABASE_URL[:8]+'ql' + DATABASE_URL[8:]
+# DATABASE_URL = os.environ['DATABASE_URL']
+# DATABASE_URL= DATABASE_URL[:8]+'ql' + DATABASE_URL[8:]
 #registrationkey = os.environ['REGISTRATION_KEY']
+DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/tempdb'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db.init_app(app)
@@ -45,9 +46,10 @@ with app.app_context():
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
 #for production
-ADMIN_PASS = os.environ['ADMIN_PASS']
+# ADMIN_PASS = os.environ['ADMIN_PASS']
 
 #for local testing
+<<<<<<< HEAD
 #ADMIN_PASS = 'abc'
 
 users = {'admin':{'pw':ADMIN_PASS}}
@@ -78,6 +80,9 @@ def request_loader(request):
     return user
 
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
+=======
+ADMIN_PASS = 'admin'
+>>>>>>> 09093a6 (Move salary uploading to a backround thread when parsing and insterting into db)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -149,23 +154,29 @@ def upload_salary():
                 pass # already exists
             
             file.save(os.path.join("./data/salary", filename))
-            salaries = parse_salary_excel_file_to_df(filename)
-            if(salaries.empty):
-                return("Error parsing file")
-            try:
-                num_rows_deleted = db.session.query(Salary).delete()
-                db.session.commit()
-            except:
-                db.session.rollback()
-                return("Failure")
             
-            try:
-                salaries.to_sql('salary', db.engine, if_exists='append', index_label='id')
-            except:
-                return("Failure")
+            threading.Thread(target=salary_file_to_db, args=(filename,)).start()
             
-            return ("Success")
+            return ("Successful upload, parsing and uploading to db...")
     return ("Failure")
+
+def salary_file_to_db(filename:str):
+    salaries = parse_salary_excel_file_to_df(filename)
+    with app.app_context():
+        if(salaries.empty):
+            return("Error parsing file")
+        try:
+            num_rows_deleted = db.session.query(Salary).delete()
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return("Failure")
+        
+        try:
+            salaries.to_sql('salary', db.engine, if_exists='append', index_label='id')
+        except:
+            return("Failure")
+        return("Success")
 
 @app.route('/uploadGeo', methods = ['POST'])
 @cross_origin()
