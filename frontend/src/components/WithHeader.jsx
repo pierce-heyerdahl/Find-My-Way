@@ -14,20 +14,27 @@ function WithHeader() {
     setIsTooltipOpen(false);
   };
 
-  const handleTooltipOpen = function () {
+  const handleTooltipOpen = function (event) {
+    event.preventDefault();
     setIsTooltipOpen(true);
   };
 
   return (
     <Box sx={{ height: "100vh" }}>
-      <header>
+      <header
+        style={{
+          backgroundColor: "snow",
+          filter: "drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.1))",
+          zIndex: 1,
+        }}
+      >
         <Box
           //CSS prop.
           sx={{
             alignItems: "center",
             boxSizing: "border-box",
             display: "flex",
-            height: 58,
+            height: 56,
             justifyContent: "space-between",
             px: 2,
             py: 1,
@@ -54,21 +61,14 @@ function WithHeader() {
             Find My Way
           </Button>
           <Box>
-            <NavLink
-              to="/"
-              style={({ isActive }) =>
-                isActive ? undefined : hideComponentStyle
-              }
-            >
-              <ClickAwayListener onClickAway={handleTooltipClose}>
-                <Tooltip
-                  title="Disclaimer: Find My Way is designed to help users find future careers and locations to live. The data used by Find My Way is sourced directly from the United States Bureau of Labor Statistics."
-                  open={isTooltipOpen}
-                >
-                  <Icon onClick={handleTooltipOpen}>priority_high</Icon>
-                </Tooltip>
-              </ClickAwayListener>
-            </NavLink>
+            <ClickAwayListener onClickAway={handleTooltipClose}>
+              <Tooltip
+                title="Disclaimer: Find My Way is designed to help users find future careers and locations to live. The data used by Find My Way is sourced directly from the United States Bureau of Labor Statistics."
+                open={isTooltipOpen}
+              >
+                <Icon onClick={handleTooltipOpen}>priority_high</Icon>
+              </Tooltip>
+            </ClickAwayListener>
           </Box>
         </Box>
       </header>
@@ -76,5 +76,8 @@ function WithHeader() {
     </Box>
   );
 }
+
+/*style{({ isActive }) =>
+                isActive ? undefined : hideComponentStyle}*/
 
 export default WithHeader;
