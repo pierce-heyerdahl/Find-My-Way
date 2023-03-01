@@ -59,3 +59,15 @@ def search_state(state):
 @cross_origin()
 def search_title(title):
     return {"results": get_results_from_db_title(title)}
+
+# Best Cities For <Job Title> in <State> Route
+@bp.route("/searchStateAndTitle/<title>/<state>", methods=['GET'])
+@cross_origin()
+def search_title_in_state(title, state):
+    return {"results": get_results_from_db_title_in_state(title, state)}
+
+# Top Jobs in <City> Route
+@bp.route("/searchCity/<city>", methods=['GET'])
+@cross_origin()
+def search_city(city):
+    return {"results": get_results_from_db_city(city)}
