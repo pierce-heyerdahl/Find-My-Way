@@ -86,7 +86,11 @@ const MapView = () => {
       direction="row"
       divider={<Divider orientation="vertical" flexItem />}
       spacing={0}
-      sx={{ width: "100%", height: "calc(100% - 58px)" }}
+      sx={{
+        width: "100%",
+        height: "calc(100% - 58px)",
+        backgroundColor: "snow",
+      }}
     >
       <Box sx={{ width: "50%", height: "50%", margin: "2em" }}>
         {jobTitle ? (
