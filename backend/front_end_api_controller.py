@@ -33,7 +33,7 @@ def get_results_from_db_state(user_search):
 
     query = (
         select(Salary, City)
-        .where(Salary.state == user_search)
+        .where((Salary.state == user_search) | (Salary.abbr == user_search))
         .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
         .order_by(Salary.salary.desc())
         .limit(5)
