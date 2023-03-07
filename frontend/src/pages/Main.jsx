@@ -100,7 +100,7 @@ const Main = () => {
           variant="contained"
           color="primary"
           style={{ backgroundColor: "transparent" }}
-          href="/"
+          href="/adminLogin"
         >
           Admin
         </Button>
