@@ -1,24 +1,62 @@
 <!DOCTYPE html>
 <html>
-    <body>
+  <head>
+    <style type="text/css" rel="stylesheet">
+    
+      body {
+        background-color: #eee;
+        color: #4A4A4A;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+      }
 
-        <h1>Administrator Page</h1>
-        
-        <form action = "https://find-my-way-deploy.herokuapp.com/uploadSalary" method = "POST" enctype = "multipart/form-data">
-            <div>
-                <p>BLS Salary Excel Upload</p>
-                <p><input id="upload_button" type="file" name="file"></p>
-                <p><input id="submit_button" type="submit"></p>
-            </div>
-        </form>
+      form {
+        width: 350px;
+        position: relative;
+      }
+      
+    </style>
+  </head>
+  <body>
 
-        <form action = "https://find-my-way-deploy.herokuapp.com/uploadCoL" method = "POST" enctype = "multipart/form-data">
-            <div>
-                <p>C2ER Cost of Living Excel Upload</p>
-                <p><input id="upload_button" type="file" name="file"></p>
-                <p><input id="submit_button" type="submit"></p>
-            </div>
-        </form>
-        
-    </body>
+    <h1>Administrator Page</h1>
+
+    <form action = "/uploadSalary" method = "POST" enctype = "multipart/form-data">
+      <div>
+        <h2>BLS Salary Excel Upload</h2>
+        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="submit_button" type="submit"></p>
+      </div>
+    </form>
+
+    <form action = "/uploadCoL" method = "POST" enctype = "multipart/form-data">
+      <div>
+        <h2>C2ER Cost of Living Excel Upload</h2>
+        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="submit_button" type="submit"></p>
+      </div>
+    </form>
+
+    <form action = "/uploadGeo" method = "POST" enctype = "multipart/form-data">
+      <div>
+        <h2>GeoLocation data Excel Upload</h2>
+        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="submit_button" type="submit"></p>
+      </div>
+    </form>
+    
+    <form action = "/logout">
+      <div>
+        <h2>Log Out of Admin Page</h2>
+        <p><input type="submit" value="Log Out"></p>
+      </div>
+    </form>
+
+  </body>
 </html>
