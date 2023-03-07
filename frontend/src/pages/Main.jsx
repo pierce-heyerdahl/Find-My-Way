@@ -10,7 +10,7 @@ const Main = () => {
 
   const handleSearch = () => {
     if (!jobTitle.trim() && !state.trim()) {
-      alert("You must enter either Job Title or state!");
+      alert("You must enter either Job Title or State!");
       return;
     }
 
@@ -49,29 +49,61 @@ const Main = () => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         boxSizing: "border-box",
-        height: "calc(100% - 58px)",
+        height: "calc(100% - 56px)",
+        zIndex: 0,
       }}
     >
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" justifyContent="center" sx={{ marginTop: "16px" }}>
         <Stack
           alignItems="center"
           display="flex"
           justifyContent="center"
-          spacing={3}
+          spacing={2.5}
           width="400px"
         >
           <TextField
             label="Job Title"
             type="search"
             onChange={handleChangeJobTitle}
+            sx={{ backgroundColor: "snow" }}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                ev.preventDefault();
+                handleSearch();
+              }
+            }}
           />
           <Typography>OR</Typography>
-          <TextField label="State" type="search" onChange={handleChangeState} />
-          <Button onClick={handleSearch} variant="contained">
+          <TextField
+            label="State"
+            type="search"
+            onChange={handleChangeState}
+            sx={{ backgroundColor: "snow" }}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                ev.preventDefault();
+                handleSearch();
+              }
+            }}
+          />
+          <Button
+            onClick={handleSearch}
+            variant="contained"
+            style={{ marginTop: "40px" }}
+          >
             Search in Map
           </Button>
-          <Box>test</Box>
         </Stack>
+      </Box>
+      <Box position="absolute" bottom="20px" left={15}>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ backgroundColor: "transparent" }}
+          href="/adminLogin"
+        >
+          Admin
+        </Button>
       </Box>
     </Box>
   );

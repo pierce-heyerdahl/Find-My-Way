@@ -29,7 +29,10 @@ const MapView = () => {
   const [data, setData] = React.useState([{}]);
 
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
-  const positions = [{ lat: 30, lng: -97}, { lat: 20, lng: 85}];
+  const positions = [
+    { lat: 30, lng: -97 },
+    { lat: 20, lng: 85 },
+  ];
   const zoom = 12;
 
   const tilesLoaded = (m) => {
@@ -37,12 +40,12 @@ const MapView = () => {
     console.log("tilesloaded");
     var bounds = new window.google.maps.LatLngBounds();
     console.log(data.results);
-    {typeof data.results === "undefined" ? (
-      console.log("No Data Yet")
-    ) : (
-      data.results.map((row) => (
-        bounds.extend(new window.google.maps.LatLng(row["lat"], row["lng"])))
-      ))
+    {
+      typeof data.results === "undefined"
+        ? console.log("No Data Yet")
+        : data.results.map((row) =>
+            bounds.extend(new window.google.maps.LatLng(row["lat"], row["lng"]))
+          );
     }
     //data.results.map((row) => (bounds.extend(new window.google.maps.LatLng(row["lat"], row["lng"]))));
     m.fitBounds(bounds);
@@ -100,7 +103,11 @@ const MapView = () => {
       direction="row"
       divider={<Divider orientation="vertical" flexItem />}
       spacing={0}
-      sx={{ width: "100%", height: "calc(100% - 58px)" }}
+      sx={{
+        width: "100%",
+        height: "calc(100% - 58px)",
+        backgroundColor: "snow",
+      }}
     >
       <Box sx={{ width: "50%", height: "50%", margin: "2em" }}>
         {jobTitle ? (
@@ -148,7 +155,11 @@ const MapView = () => {
                 sx={{ padding: "1em", textAlign: "left", width: "100%" }}
                 key={i}
               >
-                {i + 1}. {row["City"] + " $" + row["Salary"].toLocaleString()}
+                {i + 1}.{" "}
+                {row["City"] +
+                  row["Job Title"] +
+                  " $" +
+                  row["Salary"].toLocaleString()}
               </Box>
             ))
           )}
@@ -180,14 +191,17 @@ const MapView = () => {
           apiKey={"AIzaSyD6FfjQK2HkU7BEbYZit0gSdpm-9e7IabI"}
           render={render}
         >
-          <Map center={center} zoom={zoom} locations={data.results} tilesLoaded={tilesLoaded}>
-            {typeof data.results === "undefined" ? (
-              console.log("This makes the markers work")
-            ) : (
-              data.results.map((row) => (
-                <Marker position={{lat: row["lat"], lng: row["lng"]}} />
-              ))
-            )}
+          <Map
+            center={center}
+            zoom={zoom}
+            locations={data.results}
+            tilesLoaded={tilesLoaded}
+          >
+            {typeof data.results === "undefined"
+              ? console.log("This makes the markers work")
+              : data.results.map((row) => (
+                  <Marker position={{ lat: row["lat"], lng: row["lng"] }} />
+                ))}
           </Map>
         </Wrapper>
       </Box>
