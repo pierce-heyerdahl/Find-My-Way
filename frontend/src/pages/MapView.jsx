@@ -156,7 +156,7 @@ const MapView = () => {
                 key={i}
               >
                 {i + 1}.{" "}
-                {row["City"] +
+                {row["City"] + " " +
                   row["Job Title"] +
                   " $" +
                   row["Salary"].toLocaleString()}
