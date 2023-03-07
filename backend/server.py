@@ -89,7 +89,7 @@ def test_upload():
 def serve_main():
     return send_from_directory(app.static_folder, 'index.html')
 
-@app.route("/admin", methods=['GET', 'POST'])
+@app.route("/adminLogin", methods=['GET', 'POST'])
 @cross_origin()
 def serve_admin():
     if request.method == 'POST':
@@ -98,17 +98,19 @@ def serve_admin():
             user = User()
             user.id = username
             flask_login.login_user(user)
-            return redirect(url_for('protect'))
+            return redirect(url_for('adminPage'))
     return send_from_directory('../frontend/', 'adminLogin.html')
 
-@app.route('/protect')
+@app.route('/adminPage')
+@cross_origin()
 @flask_login.login_required
-def protect():
+def adminPage():
     response = make_response(send_from_directory('../frontend/', 'adminPage.html'))
     response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
     return response
 
 @app.route('/logout')
+@cross_origin()
 def logout():
   flask_login.logout_user()
 
@@ -116,6 +118,7 @@ def logout():
 
 @app.route('/uploadSalary', methods = ['POST'])
 @cross_origin()
+@flask_login.login_required
 def upload_salary():
     if request.method == 'POST':
         file = request.files['file']
@@ -127,6 +130,7 @@ def upload_salary():
 
 @app.route('/uploadCoL', methods = ['POST'])
 @cross_origin()
+@flask_login.login_required
 def upload_CoL():
     if request.method == 'POST':
         file = request.files['file']
