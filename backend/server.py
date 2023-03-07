@@ -157,7 +157,7 @@ def upload_salary():
             
             threading.Thread(target=salary_file_to_db, args=(filename,)).start()
             
-            return ("Successful upload, parsing and uploading to db...")
+            return ("Upload complete, parsing and uploading to db...")
     return ("Failure")
 
 def salary_file_to_db(filename:str):
@@ -174,8 +174,14 @@ def salary_file_to_db(filename:str):
         
         try:
             salaries.to_sql('salary', db.engine, if_exists='append', index_label='id')
+            db.session.commit()
         except:
             return("Failure")
+        response = 'Data loaded into db successful.'
+        app.response_class(
+            response=response,
+             status=200
+        )
         return("Success")
 
 @app.route('/uploadGeo', methods = ['POST'])
