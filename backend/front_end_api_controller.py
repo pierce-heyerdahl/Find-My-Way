@@ -11,10 +11,11 @@ bp = Blueprint('front_end_api_controller_bp', __name__)
 def get_results_from_db_title(user_search):
     query = (
         select(Salary, City)
-        .where(Salary.job == user_search)
+        # .where(Salary.job == user_search)
+        .filter(Salary.job.ilike(f'%{user_search}%'))
         .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
         .order_by(Salary.salary.desc())
-        .limit(5)
+        .limit(10)
     ) 
 
     results = db.session.execute(query)
@@ -23,7 +24,7 @@ def get_results_from_db_title(user_search):
     def transform_to_object(row):
         salary_res = row[0]
         city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.state}
+        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
 
     holder = list(map(transform_to_object, results))
 
@@ -36,7 +37,7 @@ def get_results_from_db_state(user_search):
         .where((Salary.state == user_search) | (Salary.abbr == user_search))
         .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
         .order_by(Salary.salary.desc())
-        .limit(5)
+        .limit(10)
     ) 
     results = db.session.execute(query)
 
@@ -44,7 +45,7 @@ def get_results_from_db_state(user_search):
     def transform_to_object(row):
         salary_res = row[0]
         city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.state}
+        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
 
     holder = list(map(transform_to_object, results))
 
@@ -56,7 +57,7 @@ def get_results_from_db_title_in_state(user_search_job, user_search_state):
         .where((Salary.job == user_search_job) & (Salary.state == user_search_state))
         .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
         .order_by(Salary.salary.desc())
-        .limit(5)
+        .limit(10)
     ) 
 
     results = db.session.execute(query)
@@ -65,7 +66,7 @@ def get_results_from_db_title_in_state(user_search_job, user_search_state):
     def transform_to_object(row):
         salary_res = row[0]
         city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.state}
+        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
 
     holder = list(map(transform_to_object, results))
 
@@ -78,7 +79,7 @@ def get_results_from_db_city(user_search):
         .where(Salary.city == user_search)
         .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
         .order_by(Salary.salary.desc())
-        .limit(5)
+        .limit(10)
     ) 
 
     results = db.session.execute(query)
@@ -87,7 +88,7 @@ def get_results_from_db_city(user_search):
     def transform_to_object(row):
         salary_res = row[0]
         city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.state}
+        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
 
     holder = list(map(transform_to_object, results))
 

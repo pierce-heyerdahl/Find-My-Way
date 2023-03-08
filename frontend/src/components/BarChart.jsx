@@ -114,7 +114,7 @@ function BarChart({ chartData }) {
         options={{ maintainAspectRatio: false }}
       />
     );
-  else return "The datasets are empty!";
+  else return "No Results Found";
 }
 
 export default BarChart;
