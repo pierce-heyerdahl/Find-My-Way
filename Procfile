@@ -1,1 +1,1 @@
-web: gunicorn --chdir backend server:app
+web: uwsgi uwsgi.ini
