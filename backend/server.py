@@ -9,10 +9,13 @@ from models import *
 from state_to_abreviation import abbrevStates
 import pandas as pd
 import threading
+from dotenv import load_dotenv
 
 import front_end_api_controller
 
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
+
+load_dotenv()
 
 #for production
 SECRET_KEY = os.environ['SECRET_KEY']
@@ -32,10 +35,9 @@ CORS(app)
 #Initializing DB and Schema
 
 #production DB
-# DATABASE_URL = os.environ['DATABASE_URL']
-# DATABASE_URL= DATABASE_URL[:8]+'ql' + DATABASE_URL[8:]
-#registrationkey = os.environ['REGISTRATION_KEY']
-DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/tempdb'
+DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL= DATABASE_URL[:8]+'ql' + DATABASE_URL[8:]
+# DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/tempdb'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db.init_app(app)
@@ -46,10 +48,9 @@ with app.app_context():
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
 #for production
-# ADMIN_PASS = os.environ['ADMIN_PASS']
+ADMIN_PASS = os.environ['ADMIN_PASS']
 
 #for local testing
-<<<<<<< HEAD
 #ADMIN_PASS = 'abc'
 
 users = {'admin':{'pw':ADMIN_PASS}}
@@ -80,9 +81,6 @@ def request_loader(request):
     return user
 
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
-=======
-ADMIN_PASS = 'admin'
->>>>>>> 09093a6 (Move salary uploading to a backround thread when parsing and insterting into db)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -157,7 +155,7 @@ def upload_salary():
             
             threading.Thread(target=salary_file_to_db, args=(filename,)).start()
             
-            return ("Upload complete, parsing and uploading to db...")
+            return ("Successful upload, parsing and uploading to db...")
     return ("Failure")
 
 def salary_file_to_db(filename:str):
@@ -174,18 +172,13 @@ def salary_file_to_db(filename:str):
         
         try:
             salaries.to_sql('salary', db.engine, if_exists='append', index_label='id')
-            db.session.commit()
         except:
             return("Failure")
-        response = 'Data loaded into db successful.'
-        app.response_class(
-            response=response,
-             status=200
-        )
         return("Success")
 
 @app.route('/uploadGeo', methods = ['POST'])
 @cross_origin()
+@flask_login.login_required
 def upload_geo():
     if request.method == 'POST':
         file = request.files['file']
