@@ -19,12 +19,18 @@ const MapView = () => {
 
   const jobTitle = searchParams.get("jobTitle");
   const state = searchParams.get("state");
+  const city = searchParams.get("city");
+  const minSalary = searchParams.get("minSalary");
+  const maxSalary = searchParams.get("maxSalary");
 
   const flag = true;
 
   // returns null for the one not searched
-  //console.log(jobTitle);
-  //console.log(state);
+  console.log(jobTitle);
+  console.log(state);
+  console.log(city);
+  console.log(minSalary);
+  console.log(maxSalary);
 
   const [data, setData] = React.useState([{}]);
 
@@ -77,24 +83,34 @@ const MapView = () => {
   // search/?jobTitle=Lawyer&state=Washington
 
   React.useEffect(() => {
-    if (state !== null) {
-      fetch("/searchState/" + state)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
-          console.log(data);
-          console.log(data[0]);
-        });
-    } else {
-      fetch("/searchTitle/" + jobTitle)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
-          console.log(data);
-          console.log(data[0]);
-        });
-    }
-  }, [jobTitle, state]);
+    fetch("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary)
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        console.log(data);
+        console.log(data[0]);
+      });
+  }, [jobTitle, state, city, minSalary, maxSalary]);
+
+  // React.useEffect(() => {
+  //   if (state !== null) {
+  //     fetch("/searchState/" + state)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setData(data);
+  //         console.log(data);
+  //         console.log(data[0]);
+  //       });
+  //   } else {
+  //     fetch("/searchTitle/" + jobTitle)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setData(data);
+  //         console.log(data);
+  //         console.log(data[0]);
+  //       });
+  //   }
+  // }, [jobTitle, state]);
 
   // http://localhost:3000/mapview?jobTitle=Lawyer&state=Washington
 
