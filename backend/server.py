@@ -289,6 +289,6 @@ def parse_geo_excel_file_to_df(filename) -> pd.DataFrame():
 
     return pd.DataFrame()
     
-if __name__ == "__main__":
+#if __name__ == "__main__":
+    #app.run()
     #app.run(host = "0.0.0.0", debug = True, port = int(os.environ.get("PORT", 5000)))
-    app.run()

@@ -1,1 +1,1 @@
-web: uwsgi --ini uwsgi.ini --bind :$PORT
+web: uwsgi --ini uwsgi.ini --manage-script-name --mount /=server:app
