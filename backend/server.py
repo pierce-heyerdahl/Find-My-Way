@@ -37,7 +37,6 @@ CORS(app)
 #production DB
 DATABASE_URL = os.environ['DATABASE_URL']
 DATABASE_URL= DATABASE_URL[:8]+'ql' + DATABASE_URL[8:]
-# DATABASE_URL = 'postgresql://jeffbailie@localhost:5432/tempdb'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db.init_app(app)
