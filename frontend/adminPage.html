@@ -27,18 +27,18 @@
 
     <h1>Administrator Page</h1>
 
-    <form action = "/uploadSalary" method = "POST" enctype = "multipart/form-data">
+    <form id="salary-upload-form" action = "/uploadSalary" method = "POST" enctype = "multipart/form-data">
       <div>
         <h2>BLS Salary Excel Upload</h2>
-        <p><input id="upload_button" type="file" name="file"></p>
-        <p><input id="submit_button" type="submit"></p>
+        <p><input id="upload_salary_button" type="file" name="file"></p>
+        <p><button id="submit_button" ></p>
       </div>
     </form>
 
     <form action = "/uploadCoL" method = "POST" enctype = "multipart/form-data">
       <div>
         <h2>C2ER Cost of Living Excel Upload</h2>
-        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="upload_col_button" type="file" name="file"></p>
         <p><input id="submit_button" type="submit"></p>
       </div>
     </form>
@@ -46,7 +46,7 @@
     <form action = "/uploadGeo" method = "POST" enctype = "multipart/form-data">
       <div>
         <h2>GeoLocation data Excel Upload</h2>
-        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="upload_geo_button" type="file" name="file"></p>
         <p><input id="submit_button" type="submit"></p>
       </div>
     </form>
@@ -59,4 +59,13 @@
     </form>
 
   </body>
+  <script>
+    var source
+    function submitFile() {
+      var file = document.getElementById("upload_salary_button")
+      
+    }
+    document.getElementsByTagName("form")[0].addEventListener("submit", submitFile);
+
+  </script>
 </html>
