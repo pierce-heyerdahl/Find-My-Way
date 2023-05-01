@@ -122,6 +122,36 @@ def search_city(city):
 # If user didnt fill out certain search parameters they will be passed in as "null"
 # all this code is just example you can modify/delete
 def search(title, state, city, minSalary, maxSalary):
-    if (title == "null"):
-        return f"hello, title is null"
-    return f"hello, {title, state, city, minSalary, maxSalary}"
+    query = select(Salary, City)
+
+    if title != "null":
+        print('filtering by title')
+        query = query.filter(Salary.job.ilike(f'%{title}%'))
+    
+    if state != "null":
+        print('filtering by state')
+        query = query.filter((Salary.state == state) | (Salary.abbr == state))
+
+    if city != "null":
+        print('filtering by city')
+        query = query.filter(Salary.city.ilike(f'%{city}%'))
+
+    if (minSalary != "null") & (maxSalary != "null"):
+        query = query.where((Salary.salary >= minSalary) & (Salary.salary <= maxSalary))
+    
+    
+    print(query)
+    
+    query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name)).order_by(Salary.salary.desc()).limit(10)
+    
+    results = db.session.execute(query)
+
+    #funciton to tranform result set to object
+    def transform_to_object(row):
+        salary_res = row[0]
+        city_res = row[1]
+        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
+
+    holder = list(map(transform_to_object, results))
+
+    return {"results": holder}

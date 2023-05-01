@@ -2,7 +2,7 @@
 if [ -z "$VIRTUAL_ENV" ]; then
     echo "Activating virtual environment"
     source backend/.venv/bin/activate
-    uwsgi --manage-script-name --http-socket :5000 -R --ini uwsgi.ini
+    uwsgi --manage-script-name --http-socket :5000 --ini uwsgi.ini --py-autoreload 2
 else
-    uwsgi --manage-script-name --http-socket :5000 -R --ini uwsgi.ini
+    uwsgi --manage-script-name --http-socket :5000 --ini uwsgi.ini --py-autoreload 2
 fi
