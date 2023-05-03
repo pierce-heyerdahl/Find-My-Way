@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { useSearchParams } from "react-router-dom";
+import { useMediaQuery } from 'react-responsive';
 
 import BarChart, { convertBarChartData } from "../components/BarChart";
 
@@ -16,6 +17,8 @@ import Marker from "../components/Marker";
 
 const MapView = () => {
   const [searchParams] = useSearchParams();
+
+  const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
 
   const jobTitle = searchParams.get("jobTitle");
   const state = searchParams.get("state");
@@ -89,6 +92,7 @@ const MapView = () => {
         setData(data);
         console.log(data);
         console.log(data[0]);
+        console.log("Making Backend API call");
       });
   }, [jobTitle, state, city, minSalary, maxSalary]);
 
@@ -116,16 +120,17 @@ const MapView = () => {
 
   return (
     <Stack
-      direction="row"
+      direction={isMobile ? "column-reverse" : "row"}
       divider={<Divider orientation="vertical" flexItem />}
       spacing={0}
+      justifyContent={isMobile ? "flex-end" : ""}
       sx={{
         width: "100%",
-        height: "calc(100% - 58px)",
+        height: isMobile ? "fit-content" : "calc(100% - 58px)",
         backgroundColor: "snow",
       }}
     >
-      <Box sx={{ width: "50%", height: "50%", margin: "2em" }}>
+      <Box sx={{ width: isMobile ? "auto" : "50%", height: "50%", margin: "2em" }}>
         {jobTitle ? (
           <Typography
             textAlign="center"
@@ -200,8 +205,8 @@ const MapView = () => {
       <Box
         border="1px grey solid"
         width="100%"
-        height="100%"
-        sx={{ alignItems: "center", justifyContent: "center", width: "50%" }}
+        height={isMobile ? "25vh" : "100%"}
+        sx={{ alignItems: "center", justifyContent: "center", width: isMobile ? "100%" : "50%" }}
       >
         <Wrapper
           apiKey={"AIzaSyD6FfjQK2HkU7BEbYZit0gSdpm-9e7IabI"}
