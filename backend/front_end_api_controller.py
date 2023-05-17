@@ -12,12 +12,12 @@ bp = Blueprint('front_end_api_controller_bp', __name__)
 @bp.route('/CitiesList/<cityInput>', methods = ['GET'])
 @cross_origin()
 def list_cities_contain(cityInput):
-    query = select(Salary.city).filter(Salary.city.ilike(f'%{cityInput}%')).distinct()
+    query = select(Salary.city, Salary.state).filter(Salary.city.ilike(f'%{cityInput}%')).distinct()
     results = db.session.execute(query).all()
-    results = [row[0] for row in results]
+    results = {row[0]: row[1] for row in results}
     return results
 
-@bp.route('/CitiesList', methods = ['GET'])
+@bp.route('/CitiesList', strict_slashes = False, methods = ['GET'])
 @cross_origin()
 def list_cities():
     query = select(Salary.city, Salary.state).distinct()
@@ -25,7 +25,7 @@ def list_cities():
     results = {row[0]: row[1] for row in results}
     return results
     
-@bp.route('/JobsList', methods = ['GET'])
+@bp.route('/JobsList', strict_slashes = False, methods = ['GET'])
 @cross_origin()
 def list_job_titles():
     query = select(Salary.job).distinct()
@@ -36,12 +36,12 @@ def list_job_titles():
 @bp.route('/JobsList/<jobInput>', methods = ['GET'])
 @cross_origin()
 def list_job_titles_contains(jobInput):
-    query = select(Salary.job).filter(Salary.job.ilike(f'%{jobInput}')).distinct()
+    query = select(Salary.job).filter(Salary.job.ilike(f'%{jobInput}%')).distinct()
     results = db.session.execute(query).all()
     results = [row[0] for row in results]
     return results
 
-@bp.route('/StatesList', methods = ['GET'])
+@bp.route('/StatesList', strict_slashes = False, methods = ['GET'])
 @cross_origin()
 def list_states():
     return abbrevStates
