@@ -5,9 +5,10 @@ import {
   Divider,
   CircularProgress,
   Typography,
+  Pagination,
 } from "@mui/material";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
 
 import BarChart, { convertBarChartData } from "../components/BarChart";
@@ -18,6 +19,8 @@ import Marker from "../components/Marker";
 const MapView = () => {
   const [searchParams] = useSearchParams();
 
+  const navigate = useNavigate();
+
   const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
 
   const jobTitle = searchParams.get("jobTitle");
@@ -26,7 +29,23 @@ const MapView = () => {
   const minSalary = searchParams.get("minSalary");
   const maxSalary = searchParams.get("maxSalary");
 
+  let currentPage = parseInt(searchParams.get("page")) || 1;
+
   const flag = true;
+
+  const handlePageChange = (event, value) => {
+    let newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("page", value);
+
+    //window.history.pushState({search: newSearchParams.toString()});
+
+    navigate({
+      pathname: window.location.pathname,
+      search: newSearchParams.toString()
+    });
+
+    currentPage = value;
+  }
 
   // returns null for the one not searched
   console.log(jobTitle);
@@ -35,7 +54,7 @@ const MapView = () => {
   console.log(minSalary);
   console.log(maxSalary);
 
-  const [data, setData] = React.useState([{}]);
+  const [data, setData] = React.useState({results: [], total_pages: 1});
 
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
   const positions = [
@@ -86,15 +105,16 @@ const MapView = () => {
   // search/?jobTitle=Lawyer&state=Washington
 
   React.useEffect(() => {
-    fetch("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary)
+    console.log("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary + "/" + currentPage)
+    fetch("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary + "/" + currentPage)
       .then((res) => res.json())
       .then((data) => {
-        setData(data);
+        setData({results: data.results, total_pages: data.total_pages});
         console.log(data);
         console.log(data[0]);
         console.log("Making Backend API call");
       });
-  }, [jobTitle, state, city, minSalary, maxSalary]);
+  }, [jobTitle, state, city, minSalary, maxSalary, currentPage]);
 
   // React.useEffect(() => {
   //   if (state !== null) {
@@ -184,6 +204,9 @@ const MapView = () => {
               </Box>
             ))
           )}
+
+
+          <Pagination count={data.total_pages} page={currentPage} onChange={handlePageChange} />
         </Box>
 
         <Divider orientation="horizontal" flexItem sx={{ margin: "2em 0" }} />

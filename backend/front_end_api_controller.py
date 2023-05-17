@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
 import psycopg2
 import os
-from sqlalchemy import select
+from sqlalchemy import select, func
 from models import *
 
 bp = Blueprint('front_end_api_controller_bp', __name__)
@@ -126,13 +126,19 @@ def search_city(city):
 #         return f"hello, title is null"
 #     return f"hello, {title, state, city, minSalary, maxSalary}"
 
-@bp.route("/search/<title>/<state>/<city>/<minSalary>/<maxSalary>", methods=['GET'])
+@bp.route("/search/<title>/<state>/<city>/<minSalary>/<maxSalary>/<page>", methods=['GET'])
 @cross_origin()
 # If user didnt fill out certain search parameters they will be passed in as "null"
 # all this code is just example you can modify/delete
-def search(title, state, city, minSalary, maxSalary):
+def search(title, state, city, minSalary, maxSalary, page):
     # if (title == "null"):
     #     return f"hello, title is null"
+
+    items_per_page = 10
+    if page != "null":
+        page = int(page)
+    else:
+        page = 1
 
     query = select(Salary, City)
 
@@ -150,7 +156,15 @@ def search(title, state, city, minSalary, maxSalary):
     if (minSalary != "null") & (maxSalary != "null"):
         query = query.where((Salary.salary >= minSalary))
 
-    query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name)).order_by(Salary.salary.desc()).limit(10)
+    query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name)).order_by(Salary.salary.desc())
+
+    total_query = query.with_only_columns([func.count()]).order_by(None)
+    total_results = db.session.execute(total_query).scalar()
+    # alt ceil implementation
+    total_pages = -(-total_results // items_per_page)
+
+    offset = (page - 1) * items_per_page
+    query = query.offset(offset).limit(items_per_page)
 
     results = db.session.execute(query)
 
@@ -162,4 +176,4 @@ def search(title, state, city, minSalary, maxSalary):
 
     holder = list(map(transform_to_object, results))
 
-    return {"results": holder}
+    return {"results": holder, "total_pages": total_pages}
