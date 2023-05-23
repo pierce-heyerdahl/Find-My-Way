@@ -3,12 +3,17 @@ import { TextField, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "./images/test2.jpg";
 import RangeSlider from "../components/RangeSlider";
+import Autocomplete from "@mui/material/Autocomplete";
+import { US_STATES, JOB_TITLE_PLACEHOLDERS } from "../constants/place_holders";
 
 const Main = () => {
   const [jobTitle, setJobTitle] = React.useState("");
   const [state, setState] = React.useState("");
   const [city, setCity] = React.useState("");
   const [salaryRange, setSalaryRange] = React.useState([200000, 600000]);
+  const [stateSuggestions, setStateSuggestions] = React.useState(US_STATES);
+  const [jobTitleSuggestions, setJobTitleSuggestions] = React.useState([]);
+
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -41,15 +46,34 @@ const Main = () => {
     navigate(url + `?${searchParams.join("&")}`);
   };
 
-  const handleChangeJobTitle = (ev) => {
-    const newValue = ev.target.value;
+  // const handleChangeJobTitle = (ev) => {
+  //   const newValue = ev.target.value;
 
+  //   setJobTitle(newValue);
+  // };
+
+  const handleChangeJobTitle = (event, newValue) => {
     setJobTitle(newValue);
   };
 
-  const handleChangeState = (ev) => {
-    const newValue = ev.target.value;
+  const handleJobTitleSearch = async (event, newValue) => {
+    if (newValue) {
+      try {
+        const response = await fetch(`/JobsList/${newValue}`);
+        const data = await response.json();
+        console.log(data);
+        setJobTitleSuggestions(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
+  // const handleChangeState = (ev) => {
+  //   const newValue = ev.target.value;
+  //   setState(newValue);
+  // };
+  const handleChangeState = (event, newValue) => {
     setState(newValue);
   };
 
@@ -85,31 +109,80 @@ const Main = () => {
           spacing={2.5}
           width="400px"
         >
-          <TextField
+          <Autocomplete
             label="Job Title"
-            type="search"
+            options={jobTitleSuggestions}
             onChange={handleChangeJobTitle}
+            onInputChange={handleJobTitleSearch}
             sx={{ backgroundColor: "snow" }}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                ev.preventDefault();
-                handleSearch();
-              }
-            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Job Title"
+                type="search"
+                sx={{
+                  backgroundColor: "snow",
+                  width: "210px",
+                  "& .MuiAutocomplete-inputRoot": {
+                    paddingRight: "30px",
+                  },
+                  "& .MuiAutocomplete-endAdornment": {
+                    paddingRight: "9px",
+                    justifyContent: "flex-end",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    marginLeft: "30px",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    display: "none",
+                  },
+                }}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    handleSearch();
+                  }
+                }}
+              />
+            )}
           />
           <Typography>OR</Typography>
-          <TextField
-            label="State"
-            type="search"
+          <Autocomplete
+            options={stateSuggestions}
+            value={state}
             onChange={handleChangeState}
-            sx={{ backgroundColor: "snow" }}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                ev.preventDefault();
-                handleSearch();
-              }
-            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="State"
+                type="search"
+                sx={{
+                  backgroundColor: "snow",
+                  width: "210px",
+                  "& .MuiAutocomplete-inputRoot": {
+                    paddingRight: "30px",
+                  },
+                  "& .MuiAutocomplete-endAdornment": {
+                    paddingRight: "9px",
+                    justifyContent: "flex-end",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    marginLeft: "30px",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    display: "none",
+                  },
+                }}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    handleSearch();
+                  }
+                }}
+              />
+            )}
           />
+
           <Typography>OR</Typography>
           <TextField
             label="City"
