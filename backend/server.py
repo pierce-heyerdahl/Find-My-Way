@@ -14,10 +14,10 @@ import front_end_api_controller
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
 
 #for production
-SECRET_KEY = os.environ['SECRET_KEY']
+#SECRET_KEY = os.environ['SECRET_KEY']
 
 #for local testing
-#SECRET_KEY = 'key1'
+SECRET_KEY = 'key1'
 
 app.secret_key = SECRET_KEY
 
@@ -31,7 +31,7 @@ CORS(app)
 #Initializing DB and Schema
 
 #production DB
-DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = ""
 
 DATABASE_URL= DATABASE_URL[:8]+'ql' + DATABASE_URL[8:]
 #registrationkey = os.environ['REGISTRATION_KEY']
@@ -45,10 +45,10 @@ with app.app_context():
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
 #for production
-ADMIN_PASS = os.environ['ADMIN_PASS']
+#ADMIN_PASS = os.environ['ADMIN_PASS']
 
 #for local testing
-#ADMIN_PASS = 'abc'
+ADMIN_PASS = 'abc'
 
 users = {'admin':{'pw':ADMIN_PASS}}
 

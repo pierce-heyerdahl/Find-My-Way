@@ -116,6 +116,43 @@ def search_title_in_state(title, state):
 def search_city(city):
     return {"results": get_results_from_db_city(city)}
 
+@bp.route('/CitiesList/<cityInput>', methods = ['GET'])
+@cross_origin()
+def list_cities_contain(cityInput):
+    query = select(Salary.city, Salary.state).filter(Salary.city.ilike(f'%{cityInput}%')).distinct()
+    results = db.session.execute(query).all()
+    results = {row[0]: row[1] for row in results}
+    return results
+
+@bp.route('/CitiesList', strict_slashes = False, methods = ['GET'])
+@cross_origin()
+def list_cities():
+    query = select(Salary.city, Salary.state).distinct()
+    results = db.session.execute(query).all()
+    results = {row[0]: row[1] for row in results}
+    return results
+    
+@bp.route('/JobsList', strict_slashes = False, methods = ['GET'])
+@cross_origin()
+def list_job_titles():
+    query = select(Salary.job).distinct()
+    results = db.session.execute(query).all()
+    results = [row[0] for row in results]
+    return results
+
+@bp.route('/JobsList/<jobInput>', methods = ['GET'])
+@cross_origin()
+def list_job_titles_contains(jobInput):
+    query = select(Salary.job).filter(Salary.job.ilike(f'%{jobInput}%')).distinct()
+    results = db.session.execute(query).all()
+    results = [row[0] for row in results]
+    return results
+
+@bp.route('/StatesList', strict_slashes = False, methods = ['GET'])
+@cross_origin()
+def list_states():
+    return abbrevStates
+
 # Combined route for single search
 # @bp.route("/search/<title>/<state>/<city>/<minSalary>/<maxSalary>", methods=['GET'])
 # @cross_origin()
