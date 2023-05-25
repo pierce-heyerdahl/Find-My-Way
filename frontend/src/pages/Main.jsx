@@ -13,14 +13,15 @@ const Main = () => {
   const [salaryRange, setSalaryRange] = React.useState([200000, 600000]);
   const [stateSuggestions, setStateSuggestions] = React.useState(US_STATES);
   const [jobTitleSuggestions, setJobTitleSuggestions] = React.useState([]);
+  const [citySuggestions, setCitySuggestions] = React.useState([]);
 
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    if (!jobTitle.trim() && !state.trim() && !city.trim() && !salaryRange) {
-      alert("You must enter either Job Title or State or City!");
-      return;
-    }
+    // if (!jobTitle.trim() && !state.trim() && !city.trim() && !salaryRange) {
+    //   alert("You must enter either Job Title or State or City!");
+    //   return;
+    // }
 
     const url = "/mapview";
 
@@ -77,10 +78,21 @@ const Main = () => {
     setState(newValue);
   };
 
-  const handleChangeCity = (ev) => {
-    const newValue = ev.target.value;
-
+  const handleChangeCity = (event, newValue) => {
     setCity(newValue);
+  };
+
+  const handleCitySearch = async (event, newValue) => {
+    if (newValue) {
+      try {
+        const response = await fetch(`/CitiesList/${newValue}`);
+        const data = await response.json();
+        console.log(data);
+        setCitySuggestions(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleChangeSalaryRange = (newSalaryRange) => {
@@ -184,17 +196,43 @@ const Main = () => {
           />
 
           <Typography>OR</Typography>
-          <TextField
-            label="City"
-            type="search"
+          <Autocomplete
+            label="City Title"
+            options={citySuggestions}
+            //value={city}
             onChange={handleChangeCity}
+            onInputChange={handleCitySearch}
             sx={{ backgroundColor: "snow" }}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                ev.preventDefault();
-                handleSearch();
-              }
-            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="City"
+                type="search"
+                sx={{
+                  backgroundColor: "snow",
+                  width: "210px",
+                  "& .MuiAutocomplete-inputRoot": {
+                    paddingRight: "30px",
+                  },
+                  "& .MuiAutocomplete-endAdornment": {
+                    paddingRight: "9px",
+                    justifyContent: "flex-end",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    marginLeft: "30px",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    display: "none",
+                  },
+                }}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    handleSearch();
+                  }
+                }}
+              />
+            )}
           />
           <Stack>
             <Typography>Salary Range</Typography>
