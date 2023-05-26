@@ -110,7 +110,7 @@ def serve_admin():
             user = User()
             user.id = username
             flask_login.login_user(user)
-            return redirect(url_for('adminPage'))
+            return redirect('/adminPage')
         else:
             return redirect('/adminLogin')
     return send_from_directory('../frontend/', 'adminLogin.html')
