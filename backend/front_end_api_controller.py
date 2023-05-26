@@ -58,15 +58,15 @@ def search(title, state, city, minSalary, maxSalary):
         query = query.filter(Salary.job.ilike(f'%{title}%'))
     
     if state != "null":
-        query = query.filter((Salary.state.ilike(f'^{state}%')) or (Salary.abbr.ilike(f'^{state}%')))
+        query = query.filter((Salary.state.ilike(f'^{state}%')) | (Salary.abbr.ilike(f'^{state}%')))
 
     if city != "null":
         query = query.filter(Salary.city.ilike(f'%{city}%'))
 
     if (minSalary != "null") and (maxSalary != "null"):
-        query = query.where((Salary.salary >= minSalary) and (Salary.salary <= maxSalary))
+        query = query.where((Salary.salary >= minSalary) & (Salary.salary <= maxSalary))
     
-    query = query.join_from(Salary, City, (Salary.state == City.state) and (Salary.city == City.name)).order_by(Salary.salary.desc()).limit(10)
+    query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name)).order_by(Salary.salary.desc()).limit(10)
     
     results = db.session.execute(query)
 

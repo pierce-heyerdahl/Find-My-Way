@@ -1,13 +1,12 @@
 from flask import Blueprint, jsonify, request, redirect, url_for, stream_with_context, Response, current_app, make_response, send_from_directory
 from flask_login import login_required
 import pandas as pd
-from flask_cors import CORS, cross_origin
+from flask_cors import cross_origin
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import os
 from models import *
 from state_to_abreviation import abbrevStates
-from time import sleep
 
 
 bp = Blueprint('db_admin_upload_api', __name__)

@@ -105,14 +105,14 @@ def serve_admin():
     if request.method == 'POST':
         username = request.form.get('username')
         if username not in users:
-            return redirect('/adminLogin')
+            return redirect(url_for('serve_admin'))
         if request.form.get('pw') == users[username]['pw']:
             user = User()
             user.id = username
             flask_login.login_user(user)
             return redirect('/adminPage')
         else:
-            return redirect('/adminLogin')
+            return redirect(url_for('serve_admin'))
     return send_from_directory('../frontend/', 'adminLogin.html')
 
 @app.route('/logout')
