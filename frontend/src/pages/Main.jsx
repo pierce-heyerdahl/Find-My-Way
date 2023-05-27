@@ -62,11 +62,13 @@ const Main = () => {
       try {
         const response = await fetch(`/JobsList/${newValue}`);
         const data = await response.json();
-        console.log(data);
+        console.log("Job title data:", data); // Add logging here
         setJobTitleSuggestions(data);
       } catch (error) {
         console.error(error);
       }
+    } else {
+      setJobTitleSuggestions([]); // Reset suggestions when input is cleared
     }
   };
 
@@ -82,13 +84,19 @@ const Main = () => {
     setCity(newValue);
   };
 
-  const handleCitySearch = async (event, newValue) => {
+  const handleCitySearch = async (event, newValue, reason) => {
+    console.log("Search triggered with value:", newValue);
     if (newValue) {
       try {
         const response = await fetch(`/CitiesList/${newValue}`);
         const data = await response.json();
         console.log(data);
-        setCitySuggestions(data);
+        const suggestions = Object.entries(data).map(([city, state]) => ({
+          label: city,
+          value: state,
+        }));
+        setCitySuggestions(suggestions);
+        console.log(citySuggestions);
       } catch (error) {
         console.log(error);
       }
@@ -199,10 +207,9 @@ const Main = () => {
           <Autocomplete
             label="City Title"
             options={citySuggestions}
-            //value={city}
+            getOptionLabel={(option) => option.label}
             onChange={handleChangeCity}
             onInputChange={handleCitySearch}
-            sx={{ backgroundColor: "snow" }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -234,6 +241,7 @@ const Main = () => {
               />
             )}
           />
+
           <Stack>
             <Typography>Salary Range</Typography>
             <RangeSlider
