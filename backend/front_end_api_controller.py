@@ -1,8 +1,5 @@
 from flask import Blueprint
-from flask_cors import CORS, cross_origin
-from dotenv import load_dotenv
-import psycopg2
-import os
+from flask_cors import cross_origin
 from sqlalchemy import select
 from models import *
 from state_to_abreviation import abbrevStates
@@ -16,6 +13,14 @@ def list_cities_contain(cityInput):
     results = db.session.execute(query).all()
     results = {row[0]: row[1] for row in results}
     return results
+
+@bp.route('/CitiesListV2', strict_slashes = False, methods =['GET'])
+@cross_origin()
+def v2_list_cities():
+    query = select(Salary.city, Salary.state).distinct()
+    results = db.session.execute(query).all()
+    results = [{'city': row[0], 'state': row[1]} for row in results]
+    return {'cities': results}
 
 @bp.route('/CitiesList', strict_slashes = False, methods = ['GET'])
 @cross_origin()
