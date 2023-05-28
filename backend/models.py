@@ -19,4 +19,15 @@ class City(db.Model):
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
     abbr = db.Column(db.String)
+
+class CityCol(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    city = db.Column(db.String)
+    state = db.Column(db.String)
+    coli = db.Column(db.Float)
+    
+class StateCol(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    state = db.Column(db.String)
+    coli = db.Column(db.Float)
     

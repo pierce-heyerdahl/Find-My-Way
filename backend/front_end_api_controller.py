@@ -1,120 +1,55 @@
 from flask import Blueprint
-from flask_cors import CORS, cross_origin
-from dotenv import load_dotenv
-import psycopg2
-import os
+from flask_cors import cross_origin
 from sqlalchemy import select, func
 from models import *
+from state_to_abreviation import abbrevStates
 
 bp = Blueprint('front_end_api_controller_bp', __name__)
 
-def get_results_from_db_title(user_search):
-    query = (
-        select(Salary, City)
-        # .where(Salary.job == user_search)
-        .filter(Salary.job.ilike(f'%{user_search}%'))
-        .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
-        .order_by(Salary.salary.desc())
-        .limit(10)
-    ) 
-
-    results = db.session.execute(query)
-
-    #funciton to tranform result set to object
-    def transform_to_object(row):
-        salary_res = row[0]
-        city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
-
-    holder = list(map(transform_to_object, results))
-
-    return(holder)
-
-def get_results_from_db_state(user_search):
-
-    query = (
-        select(Salary, City)
-        .where((Salary.state == user_search) | (Salary.abbr == user_search))
-        .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
-        .order_by(Salary.salary.desc())
-        .limit(10)
-    ) 
-    results = db.session.execute(query)
-
-    #funciton to tranform result set to object
-    def transform_to_object(row):
-        salary_res = row[0]
-        city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
-
-    holder = list(map(transform_to_object, results))
-
-    return(holder)
-
-def get_results_from_db_title_in_state(user_search_job, user_search_state):
-    query = (
-        select(Salary, City)
-        .where((Salary.job == user_search_job) & (Salary.state == user_search_state))
-        .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
-        .order_by(Salary.salary.desc())
-        .limit(10)
-    ) 
-
-    results = db.session.execute(query)
-
-    #funciton to tranform result set to object
-    def transform_to_object(row):
-        salary_res = row[0]
-        city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
-
-    holder = list(map(transform_to_object, results))
-
-    return(holder)
-
-
-def get_results_from_db_city(user_search):
-    query = (
-        select(Salary, City)
-        .where(Salary.city == user_search)
-        .join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
-        .order_by(Salary.salary.desc())
-        .limit(10)
-    ) 
-
-    results = db.session.execute(query)
-
-    #funciton to tranform result set to object
-    def transform_to_object(row):
-        salary_res = row[0]
-        city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
-
-    holder = list(map(transform_to_object, results))
-
-    return(holder)
-
-@bp.route("/searchState/<state>", methods=['GET'])
+@bp.route('/CitiesList/<cityInput>', methods = ['GET'])
 @cross_origin()
-def search_state(state):
-    return {"results": get_results_from_db_state(state)}
+def list_cities_contain(cityInput):
+    query = select(Salary.city, Salary.state).filter(Salary.city.ilike(f'%{cityInput}%')).distinct()
+    results = db.session.execute(query).all()
+    results = {row[0]: row[1] for row in results}
+    return results
 
-@bp.route("/searchTitle/<title>", methods=['GET'])
+@bp.route('/CitiesListV2', strict_slashes = False, methods =['GET'])
 @cross_origin()
-def search_title(title):
-    return {"results": get_results_from_db_title(title)}
+def v2_list_cities():
+    query = select(Salary.city, Salary.state).distinct()
+    results = db.session.execute(query).all()
+    results = [{'city': row[0], 'state': row[1]} for row in results]
+    return {'cities': results}
 
-# Best Cities For <Job Title> in <State> Route
-@bp.route("/searchStateAndTitle/<title>/<state>", methods=['GET'])
+@bp.route('/CitiesList', strict_slashes = False, methods = ['GET'])
 @cross_origin()
-def search_title_in_state(title, state):
-    return {"results": get_results_from_db_title_in_state(title, state)}
+def list_cities():
+    query = select(Salary.city, Salary.state).distinct()
+    results = db.session.execute(query).all()
+    results = {row[0]: row[1] for row in results}
+    return results
+    
+@bp.route('/JobsList', strict_slashes = False, methods = ['GET'])
+@cross_origin()
+def list_job_titles():
+    query = select(Salary.job).distinct()
+    results = db.session.execute(query).all()
+    results = [row[0] for row in results]
+    return results
 
-# Top Jobs in <City> Route
-@bp.route("/searchCity/<city>", methods=['GET'])
+@bp.route('/JobsList/<jobInput>', methods = ['GET'])
 @cross_origin()
-def search_city(city):
-    return {"results": get_results_from_db_city(city)}
+def list_job_titles_contains(jobInput):
+    query = select(Salary.job).filter(Salary.job.ilike(f'%{jobInput}%')).distinct()
+    results = db.session.execute(query).all()
+    results = [row[0] for row in results]
+    return results
+
+@bp.route('/StatesList', strict_slashes = False, methods = ['GET'])
+@cross_origin()
+def list_states():
+    return abbrevStates
 
 # Combined route for single search
 # @bp.route("/search/<title>/<state>/<city>/<minSalary>/<maxSalary>", methods=['GET'])
@@ -143,18 +78,16 @@ def search(title, state, city, minSalary, maxSalary, page):
     query = select(Salary, City)
 
     if title != "null":
-        print('filtering by title')
         query = query.filter(Salary.job.ilike(f'%{title}%'))
-
+    
     if state != "null":
-        print('filtering by state')
-        query = query.where((Salary.state == state) | (Salary.abbr == state))
+        query = query.filter((Salary.state.ilike(f'{state}')) | (Salary.abbr.ilike(f'{state}')))
 
     if city != "null":
-        query = query.where(Salary.city == city)
+        query = query.filter(Salary.city.ilike(f'%{city}%'))
 
-    if (minSalary != "null") & (maxSalary != "null"):
-        query = query.where((Salary.salary >= minSalary))
+    if (minSalary != "null") and (maxSalary != "null"):
+        query = query.where((Salary.salary >= minSalary) & (Salary.salary <= maxSalary))
 
     query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name)).order_by(Salary.salary.desc())
 
@@ -165,7 +98,7 @@ def search(title, state, city, minSalary, maxSalary, page):
 
     offset = (page - 1) * items_per_page
     query = query.offset(offset).limit(items_per_page)
-
+    
     results = db.session.execute(query)
 
     #funciton to tranform result set to object
