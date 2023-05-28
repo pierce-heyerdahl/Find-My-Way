@@ -20,6 +20,14 @@
         width: 350px;
         position: relative;
       }
+
+      iframe{
+        width: 350px;
+        max-height: 50px;
+        border: 0;
+        margin: 0;
+        padding: 0;
+      }
       
     </style>
   </head>
@@ -27,30 +35,33 @@
 
     <h1>Administrator Page</h1>
 
-    <form action = "/uploadSalary" method = "POST" enctype = "multipart/form-data">
+    <form action = "/uploadSalary" method = "POST" enctype = "multipart/form-data" target="salary-response-frame">
       <div>
         <h2>BLS Salary Excel Upload</h2>
-        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="upload_salary_button" type="file" name="file"></p>
         <p><input id="submit_button" type="submit"></p>
       </div>
     </form>
+    <iframe name = salary-response-frame frameborder="0"></iframe>
 
-    <form action = "/uploadCoL" method = "POST" enctype = "multipart/form-data">
+    <form action = "/uploadCoL" method = "POST" enctype = "multipart/form-data" target = "col-response-frame">
       <div>
         <h2>C2ER Cost of Living Excel Upload</h2>
-        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="upload_col_button" type="file" name="file"></p>
         <p><input id="submit_button" type="submit"></p>
       </div>
     </form>
+    <iframe name = col-response-frame frameborder="0"></iframe>
 
-    <form action = "/uploadGeo" method = "POST" enctype = "multipart/form-data">
+    <form action = "/uploadGeo" method = "POST" enctype = "multipart/form-data" target="geo-response-frame">
       <div>
         <h2>GeoLocation data Excel Upload</h2>
-        <p><input id="upload_button" type="file" name="file"></p>
+        <p><input id="upload_geo_button" type="file" name="file"></p>
         <p><input id="submit_button" type="submit"></p>
       </div>
     </form>
-    
+    <iframe name = geo-response-frame frameborder="0"></iframe>
+
     <form action = "/logout">
       <div>
         <h2>Log Out of Admin Page</h2>
@@ -59,4 +70,13 @@
     </form>
 
   </body>
+  <script>
+    var source
+    function submitFile() {
+      var file = document.getElementById("upload_salary_button")
+      
+    }
+    document.getElementsByTagName("form")[0].addEventListener("submit", submitFile);
+
+  </script>
 </html>

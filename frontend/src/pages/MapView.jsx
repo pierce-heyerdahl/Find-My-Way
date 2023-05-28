@@ -5,9 +5,11 @@ import {
   Divider,
   CircularProgress,
   Typography,
+  Pagination,
 } from "@mui/material";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useMediaQuery } from 'react-responsive';
 
 import BarChart, { convertBarChartData } from "../components/BarChart";
 
@@ -17,16 +19,42 @@ import Marker from "../components/Marker";
 const MapView = () => {
   const [searchParams] = useSearchParams();
 
+  const navigate = useNavigate();
+
+  const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+
   const jobTitle = searchParams.get("jobTitle");
   const state = searchParams.get("state");
+  const city = searchParams.get("city");
+  const minSalary = searchParams.get("minSalary");
+  const maxSalary = searchParams.get("maxSalary");
+
+  let currentPage = parseInt(searchParams.get("page")) || 1;
 
   const flag = true;
 
-  // returns null for the one not searched
-  //console.log(jobTitle);
-  //console.log(state);
+  const handlePageChange = (event, value) => {
+    let newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("page", value);
 
-  const [data, setData] = React.useState([{}]);
+    //window.history.pushState({search: newSearchParams.toString()});
+
+    navigate({
+      pathname: window.location.pathname,
+      search: newSearchParams.toString()
+    });
+
+    currentPage = value;
+  }
+
+  // returns null for the one not searched
+  console.log(jobTitle);
+  console.log(state);
+  console.log(city);
+  console.log(minSalary);
+  console.log(maxSalary);
+
+  const [data, setData] = React.useState({results: [], total_pages: 1});
 
   const center = { lat: 47.58536201892643, lng: -122.14791354386401 };
   const positions = [
@@ -77,39 +105,52 @@ const MapView = () => {
   // search/?jobTitle=Lawyer&state=Washington
 
   React.useEffect(() => {
-    if (state !== null) {
-      fetch("/searchState/" + state)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
-          console.log(data);
-          console.log(data[0]);
-        });
-    } else {
-      fetch("/searchTitle/" + jobTitle)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
-          console.log(data);
-          console.log(data[0]);
-        });
-    }
-  }, [jobTitle, state]);
+    console.log("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary + "/" + currentPage)
+    fetch("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary + "/" + currentPage)
+      .then((res) => res.json())
+      .then((data) => {
+        setData({results: data.results, total_pages: data.total_pages});
+        console.log(data);
+        console.log(data[0]);
+        console.log("Making Backend API call");
+      });
+  }, [jobTitle, state, city, minSalary, maxSalary, currentPage]);
+
+  // React.useEffect(() => {
+  //   if (state !== null) {
+  //     fetch("/searchState/" + state)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setData(data);
+  //         console.log(data);
+  //         console.log(data[0]);
+  //       });
+  //   } else {
+  //     fetch("/searchTitle/" + jobTitle)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setData(data);
+  //         console.log(data);
+  //         console.log(data[0]);
+  //       });
+  //   }
+  // }, [jobTitle, state]);
 
   // http://localhost:3000/mapview?jobTitle=Lawyer&state=Washington
 
   return (
     <Stack
-      direction="row"
+      direction={isMobile ? "column-reverse" : "row"}
       divider={<Divider orientation="vertical" flexItem />}
       spacing={0}
+      justifyContent={isMobile ? "flex-end" : ""}
       sx={{
         width: "100%",
-        height: "calc(100% - 58px)",
+        height: isMobile ? "fit-content" : "calc(100% - 58px)",
         backgroundColor: "snow",
       }}
     >
-      <Box sx={{ width: "50%", height: "50%", margin: "2em" }}>
+      <Box sx={{ width: isMobile ? "auto" : "50%", height: "50%", margin: "2em" }}>
         {jobTitle ? (
           <Typography
             textAlign="center"
@@ -156,13 +197,16 @@ const MapView = () => {
                 key={i}
               >
                 {i + 1}.{" "}
-                {row["City"] +
+                {row["City"] + ", " + row["State"] + " - " +
                   row["Job Title"] +
                   " $" +
                   row["Salary"].toLocaleString()}
               </Box>
             ))
           )}
+
+
+          <Pagination count={data.total_pages} page={currentPage} onChange={handlePageChange} />
         </Box>
 
         <Divider orientation="horizontal" flexItem sx={{ margin: "2em 0" }} />
@@ -184,8 +228,8 @@ const MapView = () => {
       <Box
         border="1px grey solid"
         width="100%"
-        height="100%"
-        sx={{ alignItems: "center", justifyContent: "center", width: "50%" }}
+        height={isMobile ? "25vh" : "100%"}
+        sx={{ alignItems: "center", justifyContent: "center", width: isMobile ? "100%" : "50%" }}
       >
         <Wrapper
           apiKey={"AIzaSyD6FfjQK2HkU7BEbYZit0gSdpm-9e7IabI"}
