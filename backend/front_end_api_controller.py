@@ -63,7 +63,7 @@ def search(title, state, city, minSalary, maxSalary):
         query = query.filter(Salary.job.ilike(f'%{title}%'))
     
     if state != "null":
-        query = query.filter((Salary.state.ilike(f'^{state}%')) | (Salary.abbr.ilike(f'^{state}%')))
+        query = query.filter((Salary.state.ilike(f'{state}')) | (Salary.abbr.ilike(f'{state}')))
 
     if city != "null":
         query = query.filter(Salary.city.ilike(f'%{city}%'))
