@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import backgroundImage from "./images/test2.jpg";
 import RangeSlider from "../components/RangeSlider";
 import Autocomplete from "@mui/material/Autocomplete";
-import { US_STATES, JOB_TITLE_PLACEHOLDERS } from "../constants/place_holders";
+import { US_STATES } from "../constants/place_holders";
 
 const Main = () => {
   const [jobTitle, setJobTitle] = React.useState("");
@@ -27,15 +27,15 @@ const Main = () => {
 
     const searchParams = [];
 
-    if (jobTitle) {
+    if (jobTitle && typeof jobTitle === "string") {
       searchParams.push("jobTitle=" + encodeURI(jobTitle.trim()));
     }
 
-    if (state) {
+    if (state && typeof state === "string") {
       searchParams.push("state=" + encodeURI(state.trim()));
     }
 
-    if (city) {
+    if (city && typeof city === "string") {
       searchParams.push("city=" + encodeURI(city.trim()));
     }
 
@@ -100,6 +100,8 @@ const Main = () => {
       } catch (error) {
         console.log(error);
       }
+    } else {
+      setCitySuggestions([]);
     }
   };
 
