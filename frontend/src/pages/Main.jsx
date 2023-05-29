@@ -35,8 +35,11 @@ const Main = () => {
       searchParams.push("state=" + encodeURI(state.trim()));
     }
 
-    if (city && typeof city === "string") {
-      searchParams.push("city=" + encodeURI(city.trim()));
+    // if (city && typeof city === "string") {
+    //   searchParams.push("city=" + encodeURI(city.trim()));
+    // }
+    if (city && city.label) {
+      searchParams.push("city=" + encodeURI(city.label.trim()));
     }
 
     if (salaryRange) {
