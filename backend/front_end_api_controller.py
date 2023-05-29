@@ -51,23 +51,11 @@ def list_job_titles_contains(jobInput):
 def list_states():
     return abbrevStates
 
-# Combined route for single search
-# @bp.route("/search/<title>/<state>/<city>/<minSalary>/<maxSalary>", methods=['GET'])
-# @cross_origin()
-# # If user didnt fill out certain search parameters they will be passed in as "null"
-# # all this code is just example you can modify/delete
-# def search(title, state, city, minSalary, maxSalary):
-#     if (title == "null"):
-#         return f"hello, title is null"
-#     return f"hello, {title, state, city, minSalary, maxSalary}"
-
 @bp.route("/search/<title>/<state>/<city>/<minSalary>/<maxSalary>/<page>", methods=['GET'])
 @cross_origin()
 # If user didnt fill out certain search parameters they will be passed in as "null"
 # all this code is just example you can modify/delete
 def search(title, state, city, minSalary, maxSalary, page):
-    # if (title == "null"):
-    #     return f"hello, title is null"
 
     items_per_page = 10
     if page != "null":
