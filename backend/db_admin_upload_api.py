@@ -1,9 +1,8 @@
-from flask import Blueprint, jsonify, request, redirect, url_for, stream_with_context, Response, current_app, make_response, send_from_directory
+from flask import Blueprint, request, stream_with_context, Response, current_app, make_response, send_from_directory
 from flask_login import login_required
 import pandas as pd
 from flask_cors import cross_origin
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
 import os
 from models import *
 from state_to_abreviation import abbrevStates
@@ -162,13 +161,14 @@ def parse_col_to_db(filename:str):
             yield data.head().to_html()
             yield("Error parsing file<br>")
             return
-
+         
         #remove previous data since pandas to_sql doesn't support 
         try:
             yield 'removing previous data...<br>'
             num_rows_deleted = db.session.query(CityCol).delete()
             num_state_rows_deleted = db.session.query(StateCol).delete()
-            yield f'{num_rows_deleted} rows removed...<br>'
+            yield f'{num_rows_deleted} city rows removed...<br>'
+            yield f'{num_state_rows_deleted} state rows removed...<br>'
             db.session.commit()
         except:
             db.session.rollback()
@@ -212,6 +212,7 @@ def salary_file_to_db(salaries: pd.DataFrame):
             yield("Error parsing file")
             return
         try:
+            
             num_rows_deleted = db.session.query(Salary).delete()
             db.session.commit()
             yield(f'Previous data ({num_rows_deleted} rows) removed, uploading new data...<br>')
