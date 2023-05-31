@@ -1,13 +1,10 @@
-from flask import Flask, jsonify, request, redirect, url_for 
+from flask import Flask, request, redirect, url_for
 import flask_login
 from flask_login import LoginManager, UserMixin
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
-from werkzeug.utils import secure_filename
 import os
 from models import * 
-from state_to_abreviation import abbrevStates
-import pandas as pd
 from dotenv import load_dotenv
 
 import front_end_api_controller
@@ -41,7 +38,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-    
+
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
 ADMIN_PASS = os.environ['ADMIN_PASS']
@@ -111,9 +108,8 @@ def serve_admin():
 @app.route('/logout')
 @cross_origin()
 def logout():
-  flask_login.logout_user()
-
-  return redirect("/")
+    flask_login.logout_user()
+    return redirect("/")
 
 @app.errorhandler(404)
 @cross_origin()
