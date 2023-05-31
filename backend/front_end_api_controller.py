@@ -63,7 +63,7 @@ def search(title, state, city, minSalary, maxSalary, page):
     else:
         page = 1
 
-    query = select(Salary, City)
+    query = select(Salary, City, CityCol, StateCol)
 
     if title != "null":
         query = query.filter(Salary.job.ilike(f'%{title}%'))
@@ -77,7 +77,10 @@ def search(title, state, city, minSalary, maxSalary, page):
     if (minSalary != "null") and (maxSalary != "null"):
         query = query.where((Salary.salary >= minSalary) & (Salary.salary <= maxSalary))
 
-    query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name)).order_by(Salary.salary.desc())
+    query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
+    query = query.outerjoin(CityCol, (Salary.city == CityCol.city))
+    query = query.join(StateCol, (Salary.state == StateCol.state))
+    query = query.order_by(Salary.salary.desc())
 
     total_query = query.with_only_columns([func.count()]).order_by(None)
     total_results = db.session.execute(total_query).scalar()
@@ -93,7 +96,12 @@ def search(title, state, city, minSalary, maxSalary, page):
     def transform_to_object(row):
         salary_res = row[0]
         city_res = row[1]
-        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr}
+        city_col = row[2]
+        state_col = row[3]
+        coli = state_col.coli
+        if city_col:
+            coli = city_col.coli
+        return {"Job Title": salary_res.job, "Salary": salary_res.salary, "City": salary_res.city, "lat": city_res.lat, "lng": city_res.lng, "State": salary_res.abbr, "coli": coli}
 
     holder = list(map(transform_to_object, results))
 

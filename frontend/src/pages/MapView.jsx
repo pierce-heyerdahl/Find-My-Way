@@ -229,7 +229,7 @@ const MapView = () => {
                         Search on Google
                       </a>
                     </TableCell>
-                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default', color: randomNumber > 100 ? 'red' : 'green' }}>{randomNumber}</TableCell>
+                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default', color: row["coli"] > 100 ? 'red' : 'green' }}>{row["coli"]}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
