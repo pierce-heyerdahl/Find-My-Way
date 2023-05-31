@@ -41,11 +41,7 @@ with app.app_context():
 
 ALLOWED_EXTENSIONS = set(['csv', 'xlsx'])
 
-#for production
 ADMIN_PASS = os.environ['ADMIN_PASS']
-
-#for local testing
-#ADMIN_PASS = 'abc'
 
 users = {'admin':{'pw':ADMIN_PASS}}
 
