@@ -7,6 +7,7 @@ import {
   Typography,
   Pagination,
 } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
@@ -21,7 +22,9 @@ const MapView = () => {
 
   const navigate = useNavigate();
 
-  const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+  const isMobile = useMediaQuery({ query: '(max-width: 920px)' });
+  const isMobileLarge = useMediaQuery({ query: '(max-width: 1200px)' });
+  const isMobileSmall = useMediaQuery({ query: '(max-width: 450px)' });
 
   const jobTitle = searchParams.get("jobTitle");
   const state = searchParams.get("state");
@@ -29,9 +32,13 @@ const MapView = () => {
   const minSalary = searchParams.get("minSalary");
   const maxSalary = searchParams.get("maxSalary");
 
+  const RESULTS_PER_PAGE = 10;
+
   let currentPage = parseInt(searchParams.get("page")) || 1;
 
   const flag = true;
+
+  const randomNumber = Math.round(((Math.random() * 200) * 100) / 100);
 
   const handlePageChange = (event, value) => {
     let newSearchParams = new URLSearchParams(searchParams.toString());
@@ -146,11 +153,12 @@ const MapView = () => {
       justifyContent={isMobile ? "flex-end" : ""}
       sx={{
         width: "100%",
-        height: isMobile ? "fit-content" : "calc(100% - 58px)",
+        height: isMobile ? "100%" : "calc(100% - 56px)",
         backgroundColor: "snow",
+        overflow: "hidden"
       }}
     >
-      <Box sx={{ width: isMobile ? "auto" : "50%", height: "50%", margin: "2em" }}>
+      <Box sx={{ width: isMobile ? "auto" : "50%", overflowY: "auto" }}>
         {jobTitle ? (
           <Typography
             textAlign="center"
@@ -182,7 +190,7 @@ const MapView = () => {
             textAlign: "left",
             margin: "auto",
             display: "flex",
-            flexDirection: "column",
+            flexDirection: isMobile ? "column-reverse" : "column",
             justifyContent: "center",
             alignItems: "center",
             width: "fit-content",
@@ -191,22 +199,46 @@ const MapView = () => {
           {typeof data.results === "undefined" ? (
             <p>Loading...</p>
           ) : (
-            data.results.map((row, i) => (
-              <Box
-                sx={{ padding: "1em", textAlign: "left", width: "100%" }}
-                key={i}
-              >
-                {i + 1}.{" "}
-                {row["City"] + ", " + row["State"] + " - " +
-                  row["Job Title"] +
-                  " $" +
-                  row["Salary"].toLocaleString()}
-              </Box>
-            ))
-          )}
+            <TableContainer component={Paper} sx={{ maxWidth: "100%", margin: "1em" }}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>No.</TableCell>
+                  <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>Location</TableCell>
+                  <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>Job Title</TableCell>
+                  <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>Salary</TableCell>
+                  <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>Job Links</TableCell>
+                  <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>Cost of Living</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.results.map((row, i) => (
+                  <TableRow
+                    key={i}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>{((currentPage - 1) * RESULTS_PER_PAGE) + i + 1}</TableCell>
+                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>{row["City"] + ", " + row["State"]}</TableCell>
+                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>{row["Job Title"]}</TableCell>
+                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>${row["Salary"].toLocaleString()}</TableCell>
+                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default' }}>
+                      <a href={encodeURI(`https://www.google.com/search?q=${row["City"]}+${row["State"]}+${row["Job Title"]}&ibp=htl;jobs`)}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        Search on Google
+                      </a>
+                    </TableCell>
+                    <TableCell align="left" sx={{ p: isMobileSmall ? 0 : isMobileLarge ? '0.5em' : 'default', color: randomNumber > 100 ? 'red' : 'green' }}>{randomNumber}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
 
 
-          <Pagination count={data.total_pages} page={currentPage} onChange={handlePageChange} />
+          <Pagination count={data.total_pages} page={currentPage} onChange={handlePageChange} sx={{padding: "0.25em"}} />
         </Box>
 
         <Divider orientation="horizontal" flexItem sx={{ margin: "2em 0" }} />
@@ -229,7 +261,7 @@ const MapView = () => {
         border="1px grey solid"
         width="100%"
         height={isMobile ? "25vh" : "100%"}
-        sx={{ alignItems: "center", justifyContent: "center", width: isMobile ? "100%" : "50%" }}
+        sx={{ alignItems: "center", justifyContent: "center", width: isMobile ? "100%" : "50%", overflow: "hidden" }}
       >
         <Wrapper
           apiKey={"AIzaSyD6FfjQK2HkU7BEbYZit0gSdpm-9e7IabI"}
