@@ -3,34 +3,43 @@ import { TextField, Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "./images/test2.jpg";
 import RangeSlider from "../components/RangeSlider";
+import Autocomplete from "@mui/material/Autocomplete";
+import { US_STATES } from "../constants/place_holders";
 
 const Main = () => {
   const [jobTitle, setJobTitle] = React.useState("");
   const [state, setState] = React.useState("");
   const [city, setCity] = React.useState("");
   const [salaryRange, setSalaryRange] = React.useState([200000, 600000]);
+  const [stateSuggestions, setStateSuggestions] = React.useState(US_STATES);
+  const [jobTitleSuggestions, setJobTitleSuggestions] = React.useState([]);
+  const [citySuggestions, setCitySuggestions] = React.useState([]);
+
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    if (!jobTitle.trim() && !state.trim() && !city.trim() && !salaryRange) {
-      alert("You must enter either Job Title or State or City!");
-      return;
-    }
+    // if (!jobTitle.trim() && !state.trim() && !city.trim() && !salaryRange) {
+    //   alert("You must enter either Job Title or State or City!");
+    //   return;
+    // }
 
     const url = "/mapview";
 
     const searchParams = [];
 
-    if (jobTitle) {
+    if (jobTitle && typeof jobTitle === "string") {
       searchParams.push("jobTitle=" + encodeURI(jobTitle.trim()));
     }
 
-    if (state) {
+    if (state && typeof state === "string") {
       searchParams.push("state=" + encodeURI(state.trim()));
     }
 
-    if (city) {
-      searchParams.push("city=" + encodeURI(city.trim()));
+    // if (city && typeof city === "string") {
+    //   searchParams.push("city=" + encodeURI(city.trim()));
+    // }
+    if (city && city.label) {
+      searchParams.push("city=" + encodeURI(city.label.trim()));
     }
 
     if (salaryRange) {
@@ -41,22 +50,62 @@ const Main = () => {
     navigate(url + `?${searchParams.join("&")}`);
   };
 
-  const handleChangeJobTitle = (ev) => {
-    const newValue = ev.target.value;
+  // const handleChangeJobTitle = (ev) => {
+  //   const newValue = ev.target.value;
 
+  //   setJobTitle(newValue);
+  // };
+
+  const handleChangeJobTitle = (event, newValue) => {
     setJobTitle(newValue);
   };
 
-  const handleChangeState = (ev) => {
-    const newValue = ev.target.value;
+  const handleJobTitleSearch = async (event, newValue) => {
+    if (newValue) {
+      try {
+        const response = await fetch(`/JobsList/${newValue}`);
+        const data = await response.json();
+        console.log("Job title data:", data); // Add logging here
+        setJobTitleSuggestions(data);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      setJobTitleSuggestions([]); // Reset suggestions when input is cleared
+    }
+  };
 
+  // const handleChangeState = (ev) => {
+  //   const newValue = ev.target.value;
+  //   setState(newValue);
+  // };
+  const handleChangeState = (event, newValue) => {
     setState(newValue);
   };
 
-  const handleChangeCity = (ev) => {
-    const newValue = ev.target.value;
-
+  const handleChangeCity = (event, newValue) => {
     setCity(newValue);
+  };
+
+  const handleCitySearch = async (event, newValue, reason) => {
+    console.log("Search triggered with value:", newValue);
+    if (newValue) {
+      try {
+        const response = await fetch(`/CitiesList/${newValue}`);
+        const data = await response.json();
+        console.log(data);
+        const suggestions = Object.entries(data).map(([city, state]) => ({
+          label: city,
+          value: state,
+        }));
+        setCitySuggestions(suggestions);
+        console.log(citySuggestions);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setCitySuggestions([]);
+    }
   };
 
   const handleChangeSalaryRange = (newSalaryRange) => {
@@ -85,44 +134,119 @@ const Main = () => {
           spacing={2.5}
           width="400px"
         >
-          <TextField
+          <Autocomplete
             label="Job Title"
-            type="search"
+            options={jobTitleSuggestions}
             onChange={handleChangeJobTitle}
+            onInputChange={handleJobTitleSearch}
             sx={{ backgroundColor: "snow" }}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                ev.preventDefault();
-                handleSearch();
-              }
-            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Job Title"
+                type="search"
+                sx={{
+                  backgroundColor: "snow",
+                  width: "210px",
+                  "& .MuiAutocomplete-inputRoot": {
+                    paddingRight: "30px",
+                  },
+                  "& .MuiAutocomplete-endAdornment": {
+                    paddingRight: "9px",
+                    justifyContent: "flex-end",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    marginLeft: "30px",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    display: "none",
+                  },
+                }}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    handleSearch();
+                  }
+                }}
+              />
+            )}
           />
           <Typography>OR</Typography>
-          <TextField
-            label="State"
-            type="search"
+          <Autocomplete
+            options={stateSuggestions}
+            value={state}
             onChange={handleChangeState}
-            sx={{ backgroundColor: "snow" }}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                ev.preventDefault();
-                handleSearch();
-              }
-            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="State"
+                type="search"
+                sx={{
+                  backgroundColor: "snow",
+                  width: "210px",
+                  "& .MuiAutocomplete-inputRoot": {
+                    paddingRight: "30px",
+                  },
+                  "& .MuiAutocomplete-endAdornment": {
+                    paddingRight: "9px",
+                    justifyContent: "flex-end",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    marginLeft: "30px",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    display: "none",
+                  },
+                }}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    handleSearch();
+                  }
+                }}
+              />
+            )}
           />
+
           <Typography>OR</Typography>
-          <TextField
-            label="City"
-            type="search"
+          <Autocomplete
+            label="City Title"
+            options={citySuggestions}
+            getOptionLabel={(option) => option.label}
             onChange={handleChangeCity}
-            sx={{ backgroundColor: "snow" }}
-            onKeyPress={(ev) => {
-              if (ev.key === "Enter") {
-                ev.preventDefault();
-                handleSearch();
-              }
-            }}
+            onInputChange={handleCitySearch}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="City"
+                type="search"
+                sx={{
+                  backgroundColor: "snow",
+                  width: "210px",
+                  "& .MuiAutocomplete-inputRoot": {
+                    paddingRight: "30px",
+                  },
+                  "& .MuiAutocomplete-endAdornment": {
+                    paddingRight: "9px",
+                    justifyContent: "flex-end",
+                  },
+                  "& .MuiAutocomplete-popupIndicator": {
+                    marginLeft: "30px",
+                  },
+                  "& .MuiAutocomplete-clearIndicator": {
+                    display: "none",
+                  },
+                }}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    handleSearch();
+                  }
+                }}
+              />
+            )}
           />
+
           <Stack>
             <Typography>Salary Range</Typography>
             <RangeSlider
