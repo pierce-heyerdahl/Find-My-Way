@@ -140,6 +140,7 @@ def parse_col_to_db(filename:str):
 
         data = data[['city','state','coli']]
         data.reset_index(drop = True, inplace = True)
+        data.dropna(axis=0, inplace=True)
         yield 'resetting indices for db insertion, parsing...<br>'
         
         stateAve = data.groupby(['state'])['coli'].mean().round(2).reset_index()
