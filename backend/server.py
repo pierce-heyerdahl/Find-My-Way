@@ -7,7 +7,7 @@ import os
 from models import * 
 from dotenv import load_dotenv
 
-import front_end_api_controller
+from front_end_api_controller import bp as frontend_api_bp
 import db_admin_upload_api
 
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
@@ -21,7 +21,7 @@ app.secret_key = SECRET_KEY
 
 login_manager = LoginManager()
 
-app.register_blueprint(front_end_api_controller.bp)
+app.register_blueprint(frontend_api_bp)
 app.register_blueprint(db_admin_upload_api.bp)
 
 login_manager.init_app(app)
