@@ -95,15 +95,9 @@ def search(title, state, city, minSalary, maxSalary, page):
     query = query.join(StateCol, (Salary.state == StateCol.state))
     query = query.order_by(Salary.salary.desc())
 
-    # total_query = query.with_only_columns([func.count()]).order_by(None)
     results = db.session.execute(query).all()
     # alt ceil implementation
     total_pages = -(-len(results) // items_per_page)
-
-    
-    # query = query.offset(offset).limit(items_per_page)
-    
-    # results = db.session.execute(query)
 
     #funciton to tranform result set to object
     def transform_to_object(row):
