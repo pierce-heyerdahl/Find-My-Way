@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import os
 from backend.models import *
 from backend.state_to_abreviation import abbrevStates
+from backend.front_end_api_controller import clear_cache
 
 
 bp = Blueprint('db_admin_upload_api', __name__)
@@ -33,6 +34,8 @@ def upload_geo():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+
+            clear_cache()
 
             #make the directory if it doesn't exist
             try:
@@ -97,6 +100,8 @@ def upload_CoL():
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
+
+            clear_cache()
 
             #make directory if it dosn't exist
             try:
@@ -195,6 +200,8 @@ def upload_salary():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            
+            clear_cache()
             
             #make directory if it dosn't exist
             try:
