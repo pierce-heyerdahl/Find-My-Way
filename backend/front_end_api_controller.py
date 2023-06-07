@@ -6,6 +6,13 @@ from state_to_abreviation import abbrevStates
 
 bp = Blueprint('front_end_api_controller_bp', __name__)
 
+cache = {}
+
+def add_cache(search, results):
+    if len(cache) >= 10:
+        del cache[next(iter(cache))]
+    cache[search] = results
+
 @bp.route('/CitiesList/<cityInput>', methods = ['GET'])
 @cross_origin()
 def list_cities_contain(cityInput):
@@ -62,6 +69,12 @@ def search(title, state, city, minSalary, maxSalary, page):
         page = int(page)
     else:
         page = 1
+        
+    offset = (page - 1) * items_per_page
+        
+    if (title, state, city, minSalary, maxSalary) in cache:
+        cached_res = cache[(title, state, city, minSalary, maxSalary)]
+        return {"results": cached_res['results'][offset:offset+10], "total_pages": cached_res['total_pages']}
 
     query = select(Salary, City, CityCol, StateCol)
 
@@ -82,15 +95,15 @@ def search(title, state, city, minSalary, maxSalary, page):
     query = query.join(StateCol, (Salary.state == StateCol.state))
     query = query.order_by(Salary.salary.desc())
 
-    total_query = query.with_only_columns([func.count()]).order_by(None)
-    total_results = db.session.execute(total_query).scalar()
+    # total_query = query.with_only_columns([func.count()]).order_by(None)
+    results = db.session.execute(query).all()
     # alt ceil implementation
-    total_pages = -(-total_results // items_per_page)
+    total_pages = -(-len(results) // items_per_page)
 
-    offset = (page - 1) * items_per_page
-    query = query.offset(offset).limit(items_per_page)
     
-    results = db.session.execute(query)
+    # query = query.offset(offset).limit(items_per_page)
+    
+    # results = db.session.execute(query)
 
     #funciton to tranform result set to object
     def transform_to_object(row):
@@ -105,4 +118,8 @@ def search(title, state, city, minSalary, maxSalary, page):
 
     holder = list(map(transform_to_object, results))
 
-    return {"results": holder, "total_pages": total_pages}
+    full_res = {"results": holder, "total_pages": total_pages}
+    add_cache((title, state, city, minSalary, maxSalary), full_res)
+    print(cache.keys())
+
+    return {"results": holder[offset:offset+10], "total_pages": total_pages}
