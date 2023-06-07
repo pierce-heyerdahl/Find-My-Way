@@ -192,7 +192,7 @@ const MapView = () => {
                           </a>
                         </TableCell>
                         <TableCell align="left" sx={{ p: isMobileSmall ? '0.15em' : isMobileLarge ? '0.5em' : 'default', color: row["coli"] > 100 ? 'red' : 'green' }}>
-                          {row["coli"] > 100 ? '+' : '-'}{(row["coli"] - 100).toFixed(1)}%
+                          {row["coli"] > 100 ? '+' : ''}{(row["coli"] - 100).toFixed(1)}%
                         </TableCell>
                       </TableRow>
                     ))}
