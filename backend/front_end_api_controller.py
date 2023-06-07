@@ -9,7 +9,7 @@ bp = Blueprint('front_end_api_controller_bp', __name__)
 cache = {}
 
 def add_cache(search, results):
-    if len(cache) >= 10:
+    if len(cache) >= 60:
         del cache[next(iter(cache))]
     cache[search] = results
 
@@ -102,7 +102,7 @@ def search(title, state, city, minSalary, maxSalary, page):
     query = query.join_from(Salary, City, (Salary.state == City.state) & (Salary.city == City.name))
     query = query.outerjoin(CityCol, (Salary.city == CityCol.city))
     query = query.join(StateCol, (Salary.state == StateCol.state))
-    query = query.order_by(Salary.salary.desc())
+    query = query.order_by(Salary.salary.desc()).limit(1000)
 
     results = db.session.execute(query).all()
     # alt ceil implementation
