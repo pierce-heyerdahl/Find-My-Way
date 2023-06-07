@@ -120,6 +120,5 @@ def search(title, state, city, minSalary, maxSalary, page):
 
     full_res = {"results": holder, "total_pages": total_pages}
     add_cache((title, state, city, minSalary, maxSalary), full_res)
-    print(cache.keys())
 
     return {"results": holder[offset:offset+10], "total_pages": total_pages}
