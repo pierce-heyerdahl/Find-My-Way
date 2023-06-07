@@ -1,8 +1,8 @@
 from flask import Blueprint
 from flask_cors import cross_origin
 from sqlalchemy import select, func
-from models import *
-from state_to_abreviation import abbrevStates
+from backend.models import *
+from backend.state_to_abreviation import abbrevStates
 
 bp = Blueprint('front_end_api_controller_bp', __name__)
 

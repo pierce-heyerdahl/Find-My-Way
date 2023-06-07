@@ -2,13 +2,13 @@ from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 import os
-from models import * 
+from backend.models import * 
 from dotenv import load_dotenv
 load_dotenv()
 
-from front_end_api_controller import bp as frontend_api_bp
-import db_admin_upload_api
-import auth
+from backend.front_end_api_controller import bp as frontend_api_bp
+import backend.db_admin_upload_api as db_admin_upload_api
+import backend.auth as auth
 
 app = Flask(__name__, static_folder = '../frontend/build/', static_url_path = '/')
 

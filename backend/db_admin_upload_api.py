@@ -4,8 +4,8 @@ import pandas as pd
 from flask_cors import cross_origin
 from werkzeug.utils import secure_filename
 import os
-from models import *
-from state_to_abreviation import abbrevStates
+from backend.models import *
+from backend.state_to_abreviation import abbrevStates
 
 
 bp = Blueprint('db_admin_upload_api', __name__)
