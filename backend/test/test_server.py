@@ -1,6 +1,11 @@
 from backend.server import app
 from backend.models import *
+import os
 import pytest
+
+os.environ['DATABASE_URL'] = 'sqlite:///test.db'
+os.environ['ADMIN_PASS'] = 'test'
+os.environ['SECRET_KEY'] = 'testkey'
 
 @pytest.fixture
 def client():
