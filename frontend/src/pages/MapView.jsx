@@ -84,12 +84,28 @@ const MapView = () => {
 
   React.useEffect(() => {
     setLoading(true);
-    fetch("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary + "/" + currentPage)
-      .then((res) => res.json())
-      .then((data) => {
-        setData({results: data.results, total_pages: data.total_pages});
-        setLoading(false);
-      });
+    const fetchData = async () => {
+        let retry = true;
+        while (retry) {
+            retry = false;
+            try {
+                const response = await fetch("/search/" + jobTitle + "/" + state + "/" + city + "/" + minSalary + "/" + maxSalary + "/" + currentPage);
+                if (!response.ok && response.status === 500) {
+                    retry = true; 
+                    await new Promise(r => setTimeout(r, 2000));
+                    continue;
+                }
+                const data = await response.json();
+                setData({results: data.results, total_pages: data.total_pages});
+                setLoading(false);
+            } catch (error) {
+                console.error('Error:', error);
+                retry = true;
+                await new Promise(r => setTimeout(r, 2000));
+            }
+        }
+    }
+    fetchData();
   }, [jobTitle, state, city, minSalary, maxSalary, currentPage]);
 
   return (
