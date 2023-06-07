@@ -50,7 +50,7 @@ def serve_admin():
             flask_login.login_user(user)
             return redirect('/adminPage')
         else:
-            return redirect(url_for('serve_admin'))
+            return redirect('/adminLogin')
     return send_from_directory('../frontend/', 'adminLogin.html')
 
 @bp.route('/logout')
