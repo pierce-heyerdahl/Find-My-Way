@@ -2,10 +2,8 @@ import flask_login
 from flask import Blueprint, request, redirect, url_for, send_from_directory
 from flask_cors import cross_origin
 from flask_login import LoginManager, UserMixin
-# from dotenv import load_dotenv
 import os
 
-# load_dotenv()
 
 bp = Blueprint('auth_bp', __name__)
 
