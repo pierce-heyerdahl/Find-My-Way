@@ -21,6 +21,11 @@ const Main = () => {
 
   const handleSearch = () => {
 
+    if (!jobTitle && !state && !city) {
+      alert("You must fill in at least one of the fields.")
+      return;
+    }
+
     const url = "/mapview";
 
     const searchParams = [];
