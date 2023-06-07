@@ -13,6 +13,15 @@ def add_cache(search, results):
         del cache[next(iter(cache))]
     cache[search] = results
 
+def clear_cache():
+    cache.clear()
+
+@bp.route('/ClearSearchCache', strict_slashes = False, methods = ['GET'])
+@cross_origin()
+def clear_search_cache():
+    clear_cache()
+    return f"Cache Cleared<br>Current Cache:{cache}"
+
 @bp.route('/CitiesList/<cityInput>', methods = ['GET'])
 @cross_origin()
 def list_cities_contain(cityInput):
