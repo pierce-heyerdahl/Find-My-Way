@@ -66,7 +66,7 @@ function WithHeader() {
           <Box>
             <ClickAwayListener onClickAway={handleTooltipClose}>
               <Tooltip
-                title="Disclaimer: Find My Way is designed to help users find future careers and locations to live. The data used by Find My Way is sourced directly from the United States Bureau of Labor Statistics."
+                title="Disclaimer: Find My Way is designed to help users find future careers and locations to live. The data used by Find My Way is sourced directly from the United States Bureau of Labor Statistics. Cost of living information is displayed as a percentage above or below the national average."
                 open={isTooltipOpen}
               >
                 <Icon onClick={handleTooltipOpen}>priority_high</Icon>

@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Box, Button, Stack, Typography } from "@mui/material";
+import { TextField, Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "./images/test2.jpg";
 import RangeSlider from "../components/RangeSlider";
@@ -10,18 +10,16 @@ const Main = () => {
   const [jobTitle, setJobTitle] = React.useState("");
   const [state, setState] = React.useState("");
   const [city, setCity] = React.useState("");
-  const [salaryRange, setSalaryRange] = React.useState([200000, 600000]);
+  const [salaryRange, setSalaryRange] = React.useState([0, 1000000]);
   const [stateSuggestions, setStateSuggestions] = React.useState(US_STATES);
   const [jobTitleSuggestions, setJobTitleSuggestions] = React.useState([]);
   const [citySuggestions, setCitySuggestions] = React.useState([]);
 
+  const isMobile = useMediaQuery("(max-width: 920px)");
+
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    // if (!jobTitle.trim() && !state.trim() && !city.trim() && !salaryRange) {
-    //   alert("You must enter either Job Title or State or City!");
-    //   return;
-    // }
 
     const url = "/mapview";
 
@@ -35,9 +33,6 @@ const Main = () => {
       searchParams.push("state=" + encodeURI(state.trim()));
     }
 
-    // if (city && typeof city === "string") {
-    //   searchParams.push("city=" + encodeURI(city.trim()));
-    // }
     if (city && city.label) {
       searchParams.push("city=" + encodeURI(city.label.trim()));
     }
@@ -50,12 +45,6 @@ const Main = () => {
     navigate(url + `?${searchParams.join("&")}`);
   };
 
-  // const handleChangeJobTitle = (ev) => {
-  //   const newValue = ev.target.value;
-
-  //   setJobTitle(newValue);
-  // };
-
   const handleChangeJobTitle = (event, newValue) => {
     setJobTitle(newValue);
   };
@@ -65,7 +54,6 @@ const Main = () => {
       try {
         const response = await fetch(`/JobsList/${newValue}`);
         const data = await response.json();
-        console.log("Job title data:", data); // Add logging here
         setJobTitleSuggestions(data);
       } catch (error) {
         console.error(error);
@@ -75,10 +63,6 @@ const Main = () => {
     }
   };
 
-  // const handleChangeState = (ev) => {
-  //   const newValue = ev.target.value;
-  //   setState(newValue);
-  // };
   const handleChangeState = (event, newValue) => {
     setState(newValue);
   };
@@ -88,18 +72,15 @@ const Main = () => {
   };
 
   const handleCitySearch = async (event, newValue, reason) => {
-    console.log("Search triggered with value:", newValue);
     if (newValue) {
       try {
         const response = await fetch(`/CitiesList/${newValue}`);
         const data = await response.json();
-        console.log(data);
         const suggestions = Object.entries(data).map(([city, state]) => ({
           label: city,
           value: state,
         }));
         setCitySuggestions(suggestions);
-        console.log(citySuggestions);
       } catch (error) {
         console.log(error);
       }
@@ -268,16 +249,18 @@ const Main = () => {
           </Button>
         </Stack>
       </Box>
-      <Box position="absolute" bottom="20px" left={15}>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ backgroundColor: "transparent" }}
-          href="/adminLogin"
-        >
-          Admin
-        </Button>
-      </Box>
+      {!isMobile && (
+        <Box position="absolute" bottom="20px" left={15}>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ backgroundColor: "transparent" }}
+            href="/adminLogin"
+          >
+            Admin
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
