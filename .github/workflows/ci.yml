@@ -1,11 +1,12 @@
 name: Flask app tests
 on:
-    push:
+    pull_request:
         branches: 
             -main
 jobs:
-    build:
+    build-test:
         runs-on: ubuntu-latest
+        if: github.event.pull_request.merged == true
         steps:
             - uses: actions/checkout@v3
             - name: Set up Python 3.11
