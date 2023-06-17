@@ -105,7 +105,8 @@ def search(title, state, city, minSalary, maxSalary, page):
     query = query.order_by(Salary.salary.desc()).limit(1000)
 
     results = db.session.execute(query).all()
-    # alt ceil implementation
+
+    # using alt ceil() implementation to calculate total pages correctly
     total_pages = -(-len(results) // items_per_page)
 
     #funciton to tranform result set to object
@@ -121,6 +122,7 @@ def search(title, state, city, minSalary, maxSalary, page):
 
     holder = list(map(transform_to_object, results))
 
+    # format and add results to cache
     full_res = {"results": holder, "total_pages": total_pages}
     add_cache((title, state, city, minSalary, maxSalary), full_res)
 
